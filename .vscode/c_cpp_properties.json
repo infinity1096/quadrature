@@ -4,7 +4,9 @@
       "name": "STM32",
       "includePath": [
         "Core/Inc",
+        "Core/Inc/quadrature",
         "Core/Inc/quadrature/communication",
+        "Core/Inc/quadrature/hardware",
         "Drivers/CMSIS/DSP/Include",
         "Drivers/CMSIS/Device/ST/STM32G4xx/Include",
         "Drivers/CMSIS/Include",

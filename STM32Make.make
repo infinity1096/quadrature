@@ -89,7 +89,11 @@ USB_Device/Target/usbd_conf.c
 
 
 CPP_SOURCES = \
-Core/Src/main.cpp
+Core/Src/main.cpp \
+Core/Src/quadrature/FOC_math.cpp \
+Core/Src/quadrature/PID.cpp \
+Core/Src/quadrature/components.cpp \
+Core/Src/quadrature/utils.cpp
 
 
 # ASM sources
@@ -161,7 +165,9 @@ AS_INCLUDES = \
 # C includes
 C_INCLUDES =  \
 -ICore/Inc \
+-ICore/Inc/quadrature \
 -ICore/Inc/quadrature/communication \
+-ICore/Inc/quadrature/hardware \
 -IDrivers/CMSIS/DSP/Include \
 -IDrivers/CMSIS/Device/ST/STM32G4xx/Include \
 -IDrivers/CMSIS/Include \

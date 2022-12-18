@@ -11,7 +11,7 @@ class StateEstimator{
     void updateSensedCurrent(float32_t phaseA, float32_t phaseB, float32_t phaseC);
 
     private:
-
+    
 };
 
 #endif
