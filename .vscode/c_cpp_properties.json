@@ -4,6 +4,7 @@
       "name": "STM32",
       "includePath": [
         "Core/Inc",
+        "Core/Inc/libs",
         "Core/Inc/quadrature",
         "Core/Inc/quadrature/communication",
         "Core/Inc/quadrature/hardware",

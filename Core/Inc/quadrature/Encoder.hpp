@@ -8,7 +8,7 @@
 
 class Encoder{
     public:
-    virtual void initialize()=0;
+    virtual bool initialize()=0;
     virtual void updateInternal(float32_t rawInformation, InformationValidity informationValid)=0;
 
     float32_t getAbsolutePosition(){

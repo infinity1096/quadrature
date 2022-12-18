@@ -4,7 +4,7 @@
 #include "utils.hpp"
 
 struct CurrentSenseConfig{
-    uint16_t amplifier_baseline = 2047;
+    float32_t amplifier_baseline = 1.50;
     float32_t shunt_resistor = 0.001;
     float32_t amplification = 20;
 };
@@ -43,11 +43,11 @@ class CurrentSense : public VoltageSense {
 
     // current * shunt_res * amplification = (ADC_sense - ADC_base) / 4096 * AVCC_voltage
     float32_t convertVoltageToCurrent(float32_t voltage){
-        return voltage / config.shunt_resistor / config.amplification;
+        return (voltage - config.amplifier_baseline) / config.shunt_resistor / config.amplification;
     }
 
     float32_t convertCurrentToVoltage(float32_t current){
-        return current * config.shunt_resistor * config.amplification;
+        return current * config.shunt_resistor * config.amplification + config.amplifier_baseline;
     }
 
     void updateCurrent(){

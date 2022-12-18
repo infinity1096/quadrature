@@ -1,6 +1,16 @@
 #ifndef MODULATOR_HPP
 #define MODULATOR_HPP
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "arm_math.h"
+
+#ifdef __cplusplus
+}
+#endif
+
 class Modulator{
     public:
     virtual void initialize()=0;

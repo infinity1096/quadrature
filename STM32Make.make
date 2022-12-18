@@ -93,6 +93,8 @@ Core/Src/main.cpp \
 Core/Src/quadrature/FOC_math.cpp \
 Core/Src/quadrature/PID.cpp \
 Core/Src/quadrature/components.cpp \
+Core/Src/quadrature/hardware/AS5048.cpp \
+Core/Src/quadrature/hardware/TimerModulator.cpp \
 Core/Src/quadrature/utils.cpp
 
 
@@ -165,6 +167,7 @@ AS_INCLUDES = \
 # C includes
 C_INCLUDES =  \
 -ICore/Inc \
+-ICore/Inc/libs \
 -ICore/Inc/quadrature \
 -ICore/Inc/quadrature/communication \
 -ICore/Inc/quadrature/hardware \

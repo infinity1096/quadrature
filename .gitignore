@@ -1,2 +1,4 @@
 build
-Debug
+Debug/**
+Drivers/**
+*.o

@@ -1,5 +1,14 @@
 #include "quadrature/components.hpp"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "adc.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 uint16_t adc_fields[3];
 
@@ -26,5 +35,10 @@ void componentInit(){
     axis_1_ch_C = new CurrentSense(adc_fields + 2, unitVoltageSense, shuntCurrentSense);
     
     axis_1_modulator = new TimerModulator(&htim1);
+
+    axis_1_modulator->initialize();
+
+    HAL_ADC_Start_DMA(&hadc1, (uint32_t*)(adc_fields), 3);
+  
 
 }
