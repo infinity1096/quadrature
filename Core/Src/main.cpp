@@ -36,9 +36,22 @@ const osThreadAttr_t defaultTask_attributes = {
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
+  uint64_t loop_idx = 0;
+  float32_t Vab0[3];
+  float32_t V_ph = 1.0;
+
+  axis_1_modulator->hardwareEnable();
   /* Infinite loop */
   for(;;)
   {
+    float32_t th = (float32_t) (loop_idx++) * 0.3;
+
+    Vab0[0] = arm_cos_f32(th) * V_ph;
+    Vab0[1] = arm_sin_f32(th) * V_ph;
+    Vab0[2] = 0;
+    
+    axis_1_modulator->modulate(Vab0, 24);
+
     osDelay(1);
   }
   /* USER CODE END StartDefaultTask */
