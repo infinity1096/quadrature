@@ -33,15 +33,9 @@ bool AS5048::initialize() {
 
     HAL_Delay(10);
 
-    // test communication
-    HAL_GPIO_WritePin(cs_GPIOx, cs_GPIO_Pin, GPIO_PIN_RESET); // CS <- LOW
-    uint16_t nop_cmd = AS5048A_NOP_CMD;
-    auto error_code = HAL_SPI_Receive(hspix,(uint8_t*)&nop_cmd, 2, 1000);
-    HAL_GPIO_WritePin(cs_GPIOx, cs_GPIO_Pin, GPIO_PIN_SET); // CS <- HIGH
 
-    if(error_code != HAL_OK || nop_cmd != 0x00){
-        return false;
-    }
+
+    requestRead();
 
     return true;
 }
@@ -67,27 +61,37 @@ bool AS5048::requestRead(){
     return status == HAL_OK;
 }
 
-void AS5048::updateInternal(float32_t rawInformation, InformationValidity informationValid) {
+void AS5048::encoderReadCompleteCallback() {
         
-        if (informationValid == InformationValidity::INVALID){
-            encoderState = ComponentState::ERROR;
-            return;
-        }
+    HAL_GPIO_WritePin(cs_GPIOx, cs_GPIO_Pin, GPIO_PIN_SET); // CS <- HIGH
 
-        int16_t absolute_angle = (int16_t)rawInformation - 8192;
+    raw_receive = spi_buffer;
 
-        if (last_raw_information_initialized){
-            last_absolute_angle = absolute_angle;
-            last_raw_information_initialized = true;
-            return;
-        } 
+    uint16_t parity = raw_receive;
+    
+    parity ^= parity >> 8;
+    parity ^= parity >> 4;
+    parity ^= parity >> 2;
+    parity ^= parity >> 1;
 
+    if (!(parity & 0x01) == 0){
+        is_data_valid = false;
+        return;
+    }
+
+    int16_t absolute_angle = (int16_t)(raw_receive & AS5048A_DATA_MASK) - 8192;
+    absolute_position = absolute_angle;
+
+    if (last_information_initialized_cnt < 5){
+        last_information_initialized_cnt++;
+    }else{
         if (absolute_angle - last_absolute_angle > (ENCODER_PERIOD >> 1)){
             num_rotation--;
         }else if(absolute_angle - last_absolute_angle < -(ENCODER_PERIOD >> 1)){
             num_rotation++;
         }
+    } 
 
-        absolute_position = absolute_angle;
-        last_absolute_angle = absolute_angle;
-    }
+    last_absolute_angle = absolute_angle;
+    is_data_valid = true;
+}

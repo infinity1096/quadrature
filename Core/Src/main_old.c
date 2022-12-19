@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "cmsis_os.h"
 #include "adc.h"
 #include "cordic.h"
 #include "dma.h"
@@ -55,6 +56,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -105,46 +107,27 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
-  HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
-  HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
-  HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_3);
-  
-  htim1.Instance->CCR1 = 874;
-  htim1.Instance->CCR2 = 874;
-  htim1.Instance->CCR3 = 874;
-
-  double th = 0.0;
-  double amplitude = 50;
-
-  //uint16_t adc_result[4];
-
-  //HAL_ADC_Start_DMA(&hadc1, adc_result, 4);
   /* USER CODE END 2 */
 
+  /* Init scheduler */
+  osKernelInitialize();  /* Call init function for freertos objects (in freertos.c) */
+  MX_FREERTOS_Init();
+
+  /* Start scheduler */
+  osKernelStart();
+
+  /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    th += 0.3;
-
-    htim1.Instance->CCR1 = 874 + amplitude * arm_sin_f32(th);
-    htim1.Instance->CCR2 = 874 + amplitude * arm_sin_f32(th + M_PI * 2 / 3);
-    htim1.Instance->CCR3 = 874 + amplitude * arm_sin_f32(th + M_PI * 4 / 3);
-
-    HAL_Delay(1);    
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
-#endif 
-
-
+#endif
 /**
   * @brief System Clock Configuration
   * @retval None

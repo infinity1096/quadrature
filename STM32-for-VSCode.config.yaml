@@ -85,6 +85,9 @@ includeDirectories:
   - Drivers/CMSIS/Device/ST/STM32G4xx/Include
   - Drivers/CMSIS/Include
   - Drivers/CMSIS/DSP/Include
+  - Middlewares/Third_Party/FreeRTOS/Source/include 
+  - Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 
+  - Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
   - Inc/**
   - Core/Inc/**
   - Core/Lib/**
@@ -149,6 +152,7 @@ sourceFiles:
   - Src/**
   - Core/Src/**
   - Core/Lib/**
+  - Middlewares/Third_Party/FreeRTOS/Source/**
 
 
 # When no makefile is present it will show a warning pop-up.

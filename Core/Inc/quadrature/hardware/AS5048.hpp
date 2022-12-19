@@ -22,14 +22,15 @@ class AS5048 : public Encoder{
     /*  
         for AS5048, define its raw information as the 14 bit data interpreted as unsigned.
     */
-    void updateInternal(float32_t rawInformation, InformationValidity informationValid) override ;
+    void encoderReadCompleteCallback() override ;
     bool requestRead();
 
     private:
     int16_t last_absolute_angle;
-    bool last_raw_information_initialized = false;
+    int last_information_initialized_cnt = 0;
 
-    int16_t spi_buffer;
+    uint16_t spi_buffer = 0;
+    uint16_t raw_receive = 0;
 
     SPI_HandleTypeDef* hspix;
     GPIO_TypeDef* cs_GPIOx; 

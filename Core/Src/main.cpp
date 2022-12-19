@@ -1,5 +1,6 @@
 
 #include "main.h"
+#include "cmsis_os.h"
 #include "adc.h"
 #include "cordic.h"
 #include "dma.h"
@@ -16,14 +17,57 @@
 
 extern "C" void SystemClock_Config(void);
 
+extern "C" {
+
+#include "FreeRTOS.h"
+#include "task.h"
+#include "main.h"
+#include "cmsis_os.h"
+
+}
+
+osThreadId_t defaultTaskHandle;
+const osThreadAttr_t defaultTask_attributes = {
+  .name = "defaultTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal
+};
+
+void StartDefaultTask(void *argument)
+{
+  /* USER CODE BEGIN StartDefaultTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartDefaultTask */
+}
+
+osThreadId_t telemetryTaskHandle;
+const osThreadAttr_t telemetryTask_attributes = {
+  .name = "telemetryTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal
+};
+
+
 struct ADCPacket{
   float32_t phaseA;
   float32_t phaseB;
   float32_t phaseC;
+  float32_t accumlated_angle;
 };
 
 SimulinkReport<ADCPacket,200> reporter;
 ADCPacket packet;
+
+void TelemetryTask(void* argument){
+  while (true){
+    reporter.checkTransmit();
+    osDelay(1);
+  }
+}
 
 int main(void)
 {
@@ -63,9 +107,15 @@ int main(void)
 
   componentInit();
 
+  osKernelInitialize();  /* Call init function for freertos objects (in freertos.c) */
+  
+  // initialize freeRTOS threads
+  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  telemetryTaskHandle = osThreadNew(TelemetryTask, NULL, &telemetryTask_attributes);
+
   axis_1_modulator->hardwareEnable();
 
-  HAL_Delay(100);
+  osDelay(100);
 
   axis_1_ch_A->updateVoltage();
   axis_1_ch_B->updateVoltage();
@@ -78,29 +128,12 @@ int main(void)
   double th = 0.0;
   double amplitude = 0.5;
 
-
+  osKernelStart();
   /* USER CODE END 2 */
 
-  /* Infinite loop */
+  /* We should never reach here */
   /* USER CODE BEGIN WHILE */
   while (1) {
-    th += 0.3;
-    float32_t Vabc[3];
-    Vabc[0] = amplitude * arm_sin_f32(th);
-    Vabc[1] = amplitude * arm_sin_f32(th + M_PI * 2 / 3);
-    Vabc[2] = amplitude * arm_sin_f32(th + M_PI * 4 / 3);
-
-    //axis_1_modulator->modulate(Vabc[0], Vabc[1], Vabc[2], 24);
-
-    float32_t phase_currents_abc[3];
-
-    phase_currents_abc[0] = axis_1_ch_A->sensed_current;
-    phase_currents_abc[1] = axis_1_ch_B->sensed_current;
-    phase_currents_abc[2] = axis_1_ch_C->sensed_current;
-
-    reporter.checkTransmit();
-    HAL_Delay(1);
-
     /* USER CODE END WHILE */
     /* USER CODE BEGIN 3 */
   }
@@ -117,5 +150,22 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc){
   packet.phaseB = axis_1_ch_B->sensed_current;
   packet.phaseC = axis_1_ch_C->sensed_current;
   
-  reporter.record(packet);
+  //reporter.record(packet);
+}
+
+extern "C" void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi){
+  HAL_SPI_TxRxCpltCallback(hspi);
+}
+
+extern "C" void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi){
+  if (hspi == &hspi3){
+    // encoder read completed
+    axis_1_encoder->encoderReadCompleteCallback();
+    packet.accumlated_angle = axis_1_encoder->getAccumulatedPosition();
+    reporter.record(packet);
+  }
+}
+
+extern "C" void EncoderTimer(){
+  axis_1_encoder->requestRead();
 }

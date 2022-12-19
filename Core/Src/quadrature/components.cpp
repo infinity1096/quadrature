@@ -17,7 +17,7 @@ CurrentSense* axis_1_ch_B = nullptr;
 CurrentSense* axis_1_ch_C = nullptr;
 VoltageSense* pvcc_sense = nullptr;
 
-Encoder* axis_1_encoder = nullptr;
+AS5048* axis_1_encoder = nullptr;
 
 Modulator* axis_1_modulator = nullptr;
 
@@ -35,10 +35,17 @@ void componentInit(){
     axis_1_ch_C = new CurrentSense(adc_fields + 2, unitVoltageSense, shuntCurrentSense);
     
     axis_1_modulator = new TimerModulator(&htim1);
-
     axis_1_modulator->initialize();
 
-    HAL_ADC_Start_DMA(&hadc1, (uint32_t*)(adc_fields), 3);
-  
+    axis_1_encoder = new AS5048(&hspi3, GPIOB, GPIO_PIN_6);
 
+    if (!axis_1_encoder->initialize()){
+        while (1) {}
+    }
+
+    // start ADC read
+    HAL_ADC_Start_DMA(&hadc1, (uint32_t*)(adc_fields), 3);
+    
+    // start encoder Timer
+    HAL_TIM_Base_Start_IT(&htim2);
 }

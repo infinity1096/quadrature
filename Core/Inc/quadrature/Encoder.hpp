@@ -9,7 +9,7 @@
 class Encoder{
     public:
     virtual bool initialize()=0;
-    virtual void updateInternal(float32_t rawInformation, InformationValidity informationValid)=0;
+    virtual void encoderReadCompleteCallback()=0;
 
     float32_t getAbsolutePosition(){
         return (float32_t) absolute_position / (float32_t) ENCODER_PERIOD * M_TWOPI;
@@ -23,9 +23,11 @@ class Encoder{
         return encoderState;
     }
 
+    bool is_data_valid = false;
+
     protected:
-    int64_t absolute_position;
-    int64_t num_rotation; 
+    int64_t absolute_position = 0;
+    int64_t num_rotation = 0; 
 
     ComponentState encoderState;
 };

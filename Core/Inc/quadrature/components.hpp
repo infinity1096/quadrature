@@ -12,7 +12,7 @@ extern CurrentSense* axis_1_ch_B;
 extern CurrentSense* axis_1_ch_C;
 extern VoltageSense* pvcc_sense;
 
-extern Encoder* axis_1_encoder;
+extern AS5048* axis_1_encoder;
 
 extern Modulator* axis_1_modulator;
 
