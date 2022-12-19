@@ -138,9 +138,6 @@ int main(void)
   axis_1_ch_B->config.amplifier_baseline = axis_1_ch_B->sensed_voltage;
   axis_1_ch_C->config.amplifier_baseline = axis_1_ch_C->sensed_voltage;
 
-  double th = 0.0;
-  double amplitude = 0.5;
-
   osKernelStart();
   /* USER CODE END 2 */
 

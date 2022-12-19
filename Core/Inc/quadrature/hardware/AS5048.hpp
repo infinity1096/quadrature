@@ -19,9 +19,6 @@ class AS5048 : public Encoder{
     AS5048(SPI_HandleTypeDef* spix, GPIO_TypeDef* aGPIOx, uint16_t aGPIOPin) : hspix(spix), cs_GPIOx(aGPIOx), cs_GPIO_Pin(aGPIOPin) {}
     bool initialize() override;
 
-    /*  
-        for AS5048, define its raw information as the 14 bit data interpreted as unsigned.
-    */
     void encoderReadCompleteCallback() override ;
     bool requestRead();
 

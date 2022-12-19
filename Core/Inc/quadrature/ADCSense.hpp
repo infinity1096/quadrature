@@ -17,7 +17,7 @@ struct VoltageSenseConfig{
 
 class VoltageSense {
     public:
-    VoltageSense(uint16_t* adcDataField, VoltageSenseConfig aConfig) : adc_field(adcDataField), config(aConfig) {}
+    VoltageSense(uint16_t* adcDataField, VoltageSenseConfig aConfig) : config(aConfig), adc_field(adcDataField) {}
 
     float32_t convertUnitToVoltage(uint16_t rawUnit){
         return rawUnit / config.ADC_RANGE * config.AVCC_voltage / config.resistor_bridge_ratio;
