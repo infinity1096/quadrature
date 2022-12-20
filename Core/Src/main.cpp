@@ -14,6 +14,8 @@
 #include "arm_math.h"
 #include "quadrature/communication/simulink_reporter.hpp"
 #include "quadrature/components.hpp"
+#include "quadrature/CalibrateCurrentSense.hpp"
+#include "quadrature/CalibrateAxis.hpp"
 
 extern "C" void SystemClock_Config(void);
 
@@ -36,22 +38,44 @@ const osThreadAttr_t defaultTask_attributes = {
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
-  uint64_t loop_idx = 0;
-  float32_t Vab0[3];
-  float32_t V_ph = 1.0;
+    osDelay(100);
+    
+    CalibrateCurrentSense phaseACalibrator(axis_1_ch_A, 100);
+    CalibrateCurrentSense phaseBCalibrator(axis_1_ch_B, 100);
+    CalibrateCurrentSense phaseCCalibrator(axis_1_ch_C, 100);
 
-  axis_1_modulator->hardwareEnable();
+    CalibrateAxis axis_calibrator(axis_1);
+    
+    while (!phaseACalibrator.isProcessEnded()){
+      axis_1_ch_A->updateCurrent();
+      phaseACalibrator.step();
+      osDelay(1);
+    }
+
+    while (!phaseBCalibrator.isProcessEnded()){
+      axis_1_ch_B->updateCurrent();
+      phaseBCalibrator.step();
+      osDelay(1);
+    }
+
+    while (!phaseCCalibrator.isProcessEnded()){
+      axis_1_ch_C->updateCurrent();
+      phaseCCalibrator.step();
+      osDelay(1);
+    }
+
+    axis_1_modulator->hardwareEnable();
+
+    while (!axis_calibrator.isProcessEnded()){
+      axis_calibrator.step();
+      osDelay(1);
+    }
+
+    axis_1->requestArm();
+    
   /* Infinite loop */
   for(;;)
   {
-    float32_t th = (float32_t) (loop_idx++) * 0.3;
-
-    Vab0[0] = arm_cos_f32(th) * V_ph;
-    Vab0[1] = arm_sin_f32(th) * V_ph;
-    Vab0[2] = 0;
-    
-    axis_1_modulator->modulate(Vab0, 24);
-
     osDelay(1);
   }
   /* USER CODE END StartDefaultTask */
@@ -65,15 +89,16 @@ const osThreadAttr_t telemetryTask_attributes = {
 };
 
 
-struct ADCPacket{
-  float32_t phaseA;
-  float32_t phaseB;
-  float32_t phaseC;
-  float32_t accumlated_angle;
+struct TelemetryPacket{
+  float32_t Iq;
+  float32_t Id;
+  float32_t mech_angle;
+  float32_t elec_angle;
+  float32_t velocity;
 };
 
-SimulinkReport<ADCPacket,200> reporter;
-ADCPacket packet;
+SimulinkReport<TelemetryPacket,200> reporter;
+TelemetryPacket packet;
 
 void TelemetryTask(void* argument){
   while (true){
@@ -126,18 +151,6 @@ int main(void)
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
   telemetryTaskHandle = osThreadNew(TelemetryTask, NULL, &telemetryTask_attributes);
 
-  axis_1_modulator->hardwareEnable();
-
-  osDelay(100);
-
-  axis_1_ch_A->updateVoltage();
-  axis_1_ch_B->updateVoltage();
-  axis_1_ch_C->updateVoltage();
-  
-  axis_1_ch_A->config.amplifier_baseline = axis_1_ch_A->sensed_voltage;
-  axis_1_ch_B->config.amplifier_baseline = axis_1_ch_B->sensed_voltage;
-  axis_1_ch_C->config.amplifier_baseline = axis_1_ch_C->sensed_voltage;
-
   osKernelStart();
   /* USER CODE END 2 */
 
@@ -155,12 +168,8 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc){
   axis_1_ch_A->updateCurrent();
   axis_1_ch_B->updateCurrent();
   axis_1_ch_C->updateCurrent();
-
-  packet.phaseA = axis_1_ch_A->sensed_current;
-  packet.phaseB = axis_1_ch_B->sensed_current;
-  packet.phaseC = axis_1_ch_C->sensed_current;
   
-  //reporter.record(packet);
+  axis_1_control_logic.sensedCurrentUpdate();
 }
 
 extern "C" void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi){
@@ -171,7 +180,15 @@ extern "C" void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi){
   if (hspi == &hspi3){
     // encoder read completed
     axis_1_encoder->encoderReadCompleteCallback();
-    packet.accumlated_angle = axis_1_encoder->getAccumulatedPosition();
+    //reporter.record(packet);
+    axis_1_control_logic.sensedEncoderUpdate();
+
+    axis_1_control_logic.state_estimator.getDQCurrent(&packet.Id, &packet.Iq);
+
+    packet.mech_angle = axis_1_control_logic.state_estimator.getAngle();
+    packet.elec_angle = axis_1_control_logic.state_estimator.getElectricalAngle();
+    packet.velocity = axis_1_control_logic.state_estimator.getVelocity();
+    
     reporter.record(packet);
   }
 }

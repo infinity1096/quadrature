@@ -1,9 +1,13 @@
 #include "TimerModulator.hpp"
 
 #include "FOC_math.hpp"
+#include "safety.hpp"
+
+#define USE_SVPWM
 
 void TimerModulator::initialize() {
     HAL_TIM_Base_Start(htimx);
+    safety_state = ComponentState::NORMAL;
 }
 
 void TimerModulator::hardwareEnable() {
@@ -29,9 +33,16 @@ void TimerModulator::modulate(float32_t Va, float32_t Vb, float32_t Vc, float32_
     VabcBuffer[1] = Vb;
     VabcBuffer[2] = Vc;
 
-    forwardClarke(VabcBuffer, Vab0Buffer);
+    float32_t max_modulate = Vdc / 2.0;
 
-    modulate(Vab0Buffer, Vdc);
+    VabcBuffer[0] = clip(VabcBuffer[0], -max_modulate, max_modulate);
+    VabcBuffer[1] = clip(VabcBuffer[1], -max_modulate, max_modulate);
+    VabcBuffer[2] = clip(VabcBuffer[2], -max_modulate, max_modulate);
+    
+    htimx->Instance->CCR1 = 874.5 + 874 * VabcBuffer[0] / max_modulate;
+    htimx->Instance->CCR2 = 874.5 + 874 * VabcBuffer[1] / max_modulate;
+    htimx->Instance->CCR3 = 874.5 + 874 * VabcBuffer[2] / max_modulate;
+    
 }
 
 void TimerModulator::modulate(float32_t Vab0[3], float32_t Vdc) {
@@ -49,4 +60,6 @@ void TimerModulator::modulate(float32_t Vab0[3], float32_t Vdc) {
     htimx->Instance->CCR1 = 1749 * timingBuffer[0];
     htimx->Instance->CCR2 = 1749 * timingBuffer[1];
     htimx->Instance->CCR3 = 1749 * timingBuffer[2];
+
+    
 }

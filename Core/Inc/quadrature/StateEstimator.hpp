@@ -2,16 +2,37 @@
 #define STATE_ESTIMATOR_HPP
 
 #include "utils.hpp"
+#include "Axis.hpp"
+
+class Axis;
 
 class StateEstimator{
     public:
-
+    
     // information update function from sensors
-    void updateSensedPosition(float32_t absolutePosition);
-    void updateSensedCurrent(float32_t phaseA, float32_t phaseB, float32_t phaseC);
+    void updateSensedAngle(float32_t angle);
+    void updateSensedCurrent(float32_t sensedCurrent[3]);
+
+    float32_t getElectricalAngle();
+    float32_t getAngle();
+    float32_t getVelocity();
+    void getDQCurrent(float32_t* Id,  float32_t* Iq);
+
+    void setAxis(Axis* anAxis);
+
+    protected:
+    float32_t Idq0Estimate[3] = {0.0, 0.0, 0.0};
+    float32_t electrical_angle_estimate = 0.0;
+    float32_t mechanical_angle_estimate = 0.0;
+    float32_t mechanical_velocity_estimate = 0.0;
+    
+    float32_t derivative_filter_state = 0.0;
+    bool derivative_initialized = false;
 
     private:
-    
+    float32_t N = 300.0;
+    Axis* axis;
+    float32_t Iab0_buffer[3];
 };
 
 #endif

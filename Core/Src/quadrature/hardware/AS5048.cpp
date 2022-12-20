@@ -1,5 +1,7 @@
 #include "AS5048.hpp"
 
+#include "safety.hpp"
+
 #define AS5048A_CLEAR_ERROR_FLAG_ADDR               0x0001
 #define AS5048A_PROGRAMMING_CONTROL_ADDR            0x0003
 #define AS5048A_OTP_REG_ZERO_POS_HIGH_ADDR          0x0016
@@ -33,9 +35,9 @@ bool AS5048::initialize() {
 
     HAL_Delay(10);
 
-
-
     requestRead();
+
+    safety_state = ComponentState::NORMAL;
 
     return true;
 }

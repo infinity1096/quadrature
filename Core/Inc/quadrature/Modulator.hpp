@@ -11,7 +11,9 @@ extern "C" {
 }
 #endif
 
-class Modulator{
+#include "safety.hpp"
+
+class Modulator : public SafetyComponent {
     public:
     virtual void initialize()=0;
 

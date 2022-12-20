@@ -1,7 +1,6 @@
 #ifndef AXIS_HPP
 #define AXIS_HPP
 
-#include "Motor.hpp"
 #include "Modulator.hpp"
 #include "Encoder.hpp"
 #include "safety.hpp"
@@ -16,40 +15,63 @@ struct AxisConfig{
     float32_t mechanical_offset = 0.0;
 
     Direction encoder_direction = Direction::UNKNOWN; // encoder direction w.r.t. axis
-    float32_t encoder_offset;
-    
+    float32_t encoder_phase_offset = 0.0;
+    bool encoder_calibrated = false;
+
     // maximum limits
-    float32_t current_limit;
-    float32_t velocity_limit;
-    float32_t position_limit_pos;
-    float32_t position_limit_neg;
+    float32_t current_limit = 20;
+    float32_t velocity_limit = 100;
+
+    bool is_position_limited = false;
+    float32_t position_limit_pos = 0;
+    float32_t position_limit_neg = 0;
+
+    // motor parameters
+    float32_t pole_pairs;
+    float32_t phase_resistance;
+    float32_t phase_inductance;
+    float32_t torque_constant;
+    bool motor_calibrated = false;
 };
 
 class Axis{
     public:
-    Axis(Encoder* encoder, Modulator* modulator, MotorConfig motorConfig);
+    Axis(AxisConfig axisConfig);
 
     // interface to axis from control logic
     bool requestArm();
     void disarm();
-
+    
     bool isCalibrated();
 
-    ModulatorOutput applyModulation(float32_t Vd, float32_t Vq, float32_t Vdc, float32_t electrical_angle);
-    void updateEncoder();
-    void updateVoltageSense();
+    void applyModulation(float32_t Vabc[3]);
 
-    MotorConfig motorConfig;
-    AxisConfig axisConfig;
+    void attachEncoder(Encoder* aEncoder);
+    void attachModulator(Modulator* aModulator);
+    void attachCurrentSense(long idx, CurrentSense* aSensor);
+    void attachVoltageSense(VoltageSense* aSensor);
+    
+    // transform encoder data into motor direction encoder data
+    float32_t getSensedAngle();
+    float32_t getSensedElectricalAngle();
+    void      getSensedCurrent(float32_t Iabc[3]);
+
+    // used for calibration only
+    float32_t getRawEncoderValue();
+    void applyCalibrationModulation(float32_t Vabc[3]);
+
+    float32_t electricalAngleToMechanical(float32_t electrical);
+    float32_t mechanicalAngleToElectrical(float32_t mechanical);
+
+    AxisConfig axis_config;
         
     private:
     bool is_armed = false;
-    bool is_calibrated = false;
 
     Encoder* encoder = nullptr;
     Modulator* modulator = nullptr;
-    CurrentSense* currentSense[3];
-    VoltageSense* pvccSense;
+    CurrentSense* currentSense[3] = {nullptr, nullptr, nullptr};
+    VoltageSense* pvccSense = nullptr;
 };
 
 #endif

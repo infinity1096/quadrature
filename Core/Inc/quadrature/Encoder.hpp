@@ -6,7 +6,7 @@
 
 #define ENCODER_PERIOD 16384L
 
-class Encoder{
+class Encoder : public SafetyComponent{
     public:
     virtual bool initialize()=0;
     virtual void encoderReadCompleteCallback()=0;
@@ -19,17 +19,11 @@ class Encoder{
         return getAbsolutePosition() + M_TWOPI * num_rotation;
     }
 
-    ComponentState getState(){
-        return encoderState;
-    }
-
     bool is_data_valid = false;
 
     protected:
     int64_t absolute_position = 0;
     int64_t num_rotation = 0; 
-
-    ComponentState encoderState;
 };
 
 #endif

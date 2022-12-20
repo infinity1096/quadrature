@@ -6,6 +6,21 @@
     "cortex-debug.openocdPath": "C:/Program Files (x86)/OpenOCD/bin/openocd.exe",
     "files.associations": {
         "arm_math.h": "c",
-        "components.hpp": "c"
+        "components.hpp": "c",
+        "array": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "ranges": "cpp",
+        "*.tcc": "cpp",
+        "memory_resource": "cpp",
+        "memory": "cpp",
+        "ostream": "cpp",
+        "streambuf": "cpp",
+        "controllogic.hpp": "c",
+        "cmath": "cpp"
     }
 }
