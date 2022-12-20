@@ -103,14 +103,12 @@ Core/Src/main.cpp \
 Core/Src/quadrature/Axis.cpp \
 Core/Src/quadrature/CalibrateCurrentSense.cpp \
 Core/Src/quadrature/ControlLogic.cpp \
-Core/Src/quadrature/FOC_math.cpp \
 Core/Src/quadrature/PID.cpp \
 Core/Src/quadrature/StateEstimator.cpp \
 Core/Src/quadrature/components.cpp \
 Core/Src/quadrature/hardware/AS5048.cpp \
 Core/Src/quadrature/hardware/TimerModulator.cpp \
-Core/Src/quadrature/safety.cpp \
-Core/Src/quadrature/utils.cpp
+Core/Src/quadrature/safety.cpp
 
 
 # ASM sources

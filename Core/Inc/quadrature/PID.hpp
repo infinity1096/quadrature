@@ -4,7 +4,7 @@
 #include "utils.hpp"
 
 #define SUB_STEPS 10
-class PIDController{
+template<bool derivative_enabled = true> class PIDController {
     public:
     PIDController(){
         Kp = 0.0f;
@@ -17,20 +17,23 @@ class PIDController{
     float update(float ref, float input, float dt){
         float output = 0.0f;
         float error = ref - input;
-
-        // derivative computation
-        if (!derivative_initialized){
-            derivative_initialized = true;
-            derivative_filter_state = error;
-        }
         
-        // derivative filtering
-        for (int i = 0; i < SUB_STEPS; i++){
-            derivative_filter_state += dt * N * (error - derivative_filter_state) / SUB_STEPS;
+        if (derivative_enabled){
+            // derivative computation
+            if (!derivative_initialized){
+                derivative_initialized = true;
+                derivative_filter_state = error;
+            }
+            
+            // derivative filtering
+            for (int i = 0; i < SUB_STEPS; i++){
+                derivative_filter_state += dt * N * (error - derivative_filter_state) / SUB_STEPS;
+            }
+
+            // PID output computation
+            error_dot = (error - derivative_filter_state) * N;
         }
 
-        // PID output computation
-        float error_dot = (error - derivative_filter_state) * N;
         output = Kp * error + I_integrator_state + Kd * error_dot;
 
         // integrator computation
@@ -57,6 +60,7 @@ class PIDController{
 
     // output
     float last_unclipped_output;
+    float error_dot = 0.0f;
 
     // Basic PID states
     float I_integrator_state;

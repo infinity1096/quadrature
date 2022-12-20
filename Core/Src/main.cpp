@@ -188,11 +188,10 @@ extern "C" void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi){
     packet.mech_angle = axis_1_control_logic.state_estimator.getAngle();
     packet.elec_angle = axis_1_control_logic.state_estimator.getElectricalAngle();
     packet.velocity = axis_1_control_logic.state_estimator.getVelocity();
-    
-    reporter.record(packet);
   }
 }
 
 extern "C" void EncoderTimer(){
   axis_1_encoder->requestRead();
+  reporter.record(packet);
 }

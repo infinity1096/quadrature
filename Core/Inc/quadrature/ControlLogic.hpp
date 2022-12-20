@@ -21,10 +21,10 @@ class ControlLogic {
 
     ControlMode control_mode = ControlMode::CURRENT;
 
-    PIDController IqController;
-    PIDController IdController;
-    PIDController VelocityController;
-    PIDController PositionController;
+    PIDController<false> IqController;
+    PIDController<false> IdController;
+    PIDController<true> VelocityController;
+    PIDController<true> PositionController;
 
     StateEstimator state_estimator;
 

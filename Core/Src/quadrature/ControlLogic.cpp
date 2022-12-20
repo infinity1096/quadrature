@@ -14,7 +14,7 @@ void ControlLogic::sensedCurrentUpdate(){
     // fetch reference signal
     float32_t Id_target_local = 0.0;
     float32_t Iq_target_local = 0.0;
-
+    
     switch (control_mode){
         case ControlMode::NONE:
             return;
