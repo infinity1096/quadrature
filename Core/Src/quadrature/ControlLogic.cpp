@@ -58,14 +58,22 @@ void ControlLogic::sensedCurrentUpdate(){
     
     Id_integrator += Id_Ki * Id_error/24000.0;
     Iq_integrator += Iq_Ki * Iq_error/24000.0;
-     
+
+    
+
+
     // limit Vdq0 control voltage according to axis config FIXME: 
+    // FIXME: system response testing
     Vdq0[0] = clip(Vd, -4, 4);
     Vdq0[1] = clip(Vq, -4, 4);
 
     //Id_integrator += (Vdq0[0] - Vd) / 24000.0;
     //Iq_integrator += (Vdq0[1] - Vq) / 24000.0;
     
+    // record output voltage
+    Vd_output = Vdq0[0];
+    Vq_output = Vdq0[1];
+
     float32_t Vab0[3] = {0.0, 0.0, 0.0};
 
     inversePark(Vdq0, electrical_angle, Vab0);
@@ -89,22 +97,12 @@ void ControlLogic::sensedEncoderUpdate(){
             return;
         case ControlMode::POSITION:
             
-            if (buffer.getOccupied() == 0){
-                control_mode = ControlMode::NONE;
-                return;
-            }
-            buffer.read(&position_target_local, 1);
+
 
             break;
 
         case ControlMode::VELOCITY:
 
-            if (buffer.getOccupied() == 0){
-                control_mode = ControlMode::NONE;
-                return;
-            }
-            buffer.read(&velocity_target_local, 1);
-            
             break;
     };
 

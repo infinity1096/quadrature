@@ -25,13 +25,13 @@ void StateEstimator::updateSensedAngle(float32_t angle){
 }
 
 void StateEstimator::updateSensedCurrent(float32_t sensedCurrent[3]){
-    float32_t Idq0[3];
-    forwardClarke(sensedCurrent, Iab0_buffer);
-    forwardPark(Iab0_buffer, electrical_angle_estimate, Idq0);
-
-    Idq0Estimate[0] = Id_complementry_gain * Idq0Estimate[0] + (1.0 - Id_complementry_gain) * Idq0[0];
     
-    Idq0Estimate[1] = Iq_complementry_gain * Idq0Estimate[1] + (1.0 - Iq_complementry_gain) * Idq0[1];
+    forwardClarke(sensedCurrent, Iab0_buffer);
+    forwardPark(Iab0_buffer, electrical_angle_estimate, Idq0UnFiltered);
+
+    Idq0Estimate[0] = Id_complementry_gain * Idq0Estimate[0] + (1.0 - Id_complementry_gain) * Idq0UnFiltered[0];
+    
+    Idq0Estimate[1] = Iq_complementry_gain * Idq0Estimate[1] + (1.0 - Iq_complementry_gain) * Idq0UnFiltered[1];
 
     Idq0Estimate[2] = 0.0;
 }
@@ -51,6 +51,11 @@ float32_t StateEstimator::getVelocity(){
 void StateEstimator::getDQCurrent(float32_t* Id,  float32_t* Iq){
     *Id = Idq0Estimate[0];
     *Iq = Idq0Estimate[1];
+}
+
+void StateEstimator::getUnFilteredDQCurrent(float32_t* Id,  float32_t* Iq){
+    *Id = Idq0UnFiltered[0];
+    *Iq = Idq0UnFiltered[1];
 }
 
 void StateEstimator::setAxis(Axis* anAxis){

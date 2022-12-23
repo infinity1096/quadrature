@@ -9,7 +9,7 @@ enum class ControlMode {NONE, CURRENT, VELOCITY, POSITION};
 
 class ControlLogic {
     public:
-    ControlLogic() : buffer(1000) {}
+    ControlLogic() {}
 
     void setAxis(Axis* aAxis){
         axis = aAxis;
@@ -32,6 +32,9 @@ class ControlLogic {
     float32_t Id_target = 0.0;    
     float32_t Iq_target = 0.0;
 
+    float32_t Vd_output = 0.0;
+    float32_t Vq_output = 0.0;
+
     float32_t Id_Kp = 0.0;
     float32_t Id_Ki = 0.0;
     float32_t Id_integrator = 0.0;
@@ -41,7 +44,7 @@ class ControlLogic {
     float32_t Iq_integrator = 0.0;
     
     Axis* axis;
-    Ringbuffer<float32_t> buffer;
+
 };
 
 

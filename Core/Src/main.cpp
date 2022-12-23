@@ -91,13 +91,19 @@ const osThreadAttr_t telemetryTask_attributes = {
 
 
 struct TelemetryPacket{
-  float32_t Id;
-  float32_t Iq;
-  float32_t Id_Target;
-  float32_t Iq_Target;
+  float32_t Id_unfiltered;        // unfiltered D axis current
+  float32_t Iq_unfiltered;        // unfiltered Q axis current
+  float32_t Id;                   // filtered D axis current
+  float32_t Iq;                   // filtered Q axis current
+  float32_t Id_Target;            // D axis current target
+  float32_t Iq_Target;            // Q axis current target
+  float32_t Vd;                   // D axis output Voltage
+  float32_t Vq;                   // Q axis output Voltage
+  float32_t electrical_angle;     // current electrical angle
+  float32_t velocity;             // current mechanical velocity
 };
 
-SimulinkReport<TelemetryPacket,200> reporter;
+SimulinkReport<TelemetryPacket,100> reporter;
 TelemetryPacket packet;
 
 void TelemetryTask(void* argument){
@@ -184,10 +190,6 @@ extern "C" void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi){
     //reporter.record(packet);
     axis_1_control_logic.sensedEncoderUpdate();
 
-    axis_1_control_logic.state_estimator.getDQCurrent(&packet.Id, &packet.Iq);
-    packet.Id_Target = axis_1_control_logic.Id_target;
-    packet.Iq_Target = axis_1_control_logic.Iq_target;
-
     // packet.mech_angle = axis_1_control_logic.state_estimator.getAngle();
     // packet.elec_angle = axis_1_control_logic.state_estimator.getElectricalAngle();
     // packet.velocity = axis_1_control_logic.state_estimator.getVelocity();
@@ -196,5 +198,18 @@ extern "C" void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi){
 
 extern "C" void EncoderTimer(){
   axis_1_encoder->requestRead();
+  
+  axis_1_control_logic.state_estimator.getDQCurrent(&packet.Id, &packet.Iq);
+  axis_1_control_logic.state_estimator.getUnFilteredDQCurrent(&packet.Id_unfiltered, &packet.Iq_unfiltered);
+  
+  packet.Id_Target = axis_1_control_logic.Id_target;
+  packet.Iq_Target = axis_1_control_logic.Iq_target;
+
+  packet.Vd = axis_1_control_logic.Vd_output;
+  packet.Vq = axis_1_control_logic.Vq_output;
+
+  packet.electrical_angle = axis_1_control_logic.state_estimator.getElectricalAngle();
+  packet.velocity = axis_1_control_logic.state_estimator.getVelocity();
+
   reporter.record(packet);
 }
