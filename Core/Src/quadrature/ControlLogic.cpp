@@ -20,7 +20,7 @@ void ControlLogic::sensedCurrentUpdate(){
             return;
         case ControlMode::CURRENT:
             // fetch current reference from buffer
-            Id_target_local = 0.0;
+            //Id_target_local = 0.0;
             /*
             if (buffer.getOccupied() == 0){
                 control_mode = ControlMode::NONE;
@@ -38,6 +38,9 @@ void ControlLogic::sensedCurrentUpdate(){
             break;
     }
 
+    Id_target_local = Id_target;
+    Iq_target_local = Iq_target;
+
     // read sensed electrical angle and IDQ from state estimator
     float32_t Id, Iq, electrical_angle;
     state_estimator.getDQCurrent(&Id, &Iq);
@@ -45,15 +48,24 @@ void ControlLogic::sensedCurrentUpdate(){
 
     // compute unclipped PID output from current control loop
     float32_t Vdq0[3] = {0.0, 0.0, 0.0};
+    float32_t Vd = 0.0, Vq = 0.0;
 
-    Vdq0[0] = IdController.update(Id_target_local, Id, 1.0/48000.0);
-    Vdq0[1] = IqController.update(Iq_target_local, Iq, 1.0/48000.0);
-    // Vdq0[2] = 0.0;
-
+    Id_error = Id_target_local - Id;
+    Iq_error = Iq_target_local - Iq;
+    
+    Vd = Id_Kp * Id_error + Id_integrator;
+    Vq = Iq_Kp * Iq_error + Iq_integrator;
+    
+    Id_integrator += Id_Ki * Id_error/24000.0;
+    Iq_integrator += Iq_Ki * Iq_error/24000.0;
+     
     // limit Vdq0 control voltage according to axis config FIXME: 
-    Vdq0[0] = 0.0;
-    Vdq0[1] = 1.0;
+    Vdq0[0] = clip(Vd, -4, 4);
+    Vdq0[1] = clip(Vq, -4, 4);
 
+    //Id_integrator += (Vdq0[0] - Vd) / 24000.0;
+    //Iq_integrator += (Vdq0[1] - Vq) / 24000.0;
+    
     float32_t Vab0[3] = {0.0, 0.0, 0.0};
 
     inversePark(Vdq0, electrical_angle, Vab0);
@@ -74,7 +86,6 @@ void ControlLogic::sensedEncoderUpdate(){
     switch (control_mode) {
         case ControlMode::NONE: 
         case ControlMode::CURRENT: 
-            Iq_target = 0.0;
             return;
         case ControlMode::POSITION:
             

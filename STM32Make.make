@@ -105,6 +105,7 @@ Core/Src/quadrature/CalibrateCurrentSense.cpp \
 Core/Src/quadrature/ControlLogic.cpp \
 Core/Src/quadrature/PID.cpp \
 Core/Src/quadrature/StateEstimator.cpp \
+Core/Src/quadrature/communication/SimulinkPIDAdjust.cpp \
 Core/Src/quadrature/components.cpp \
 Core/Src/quadrature/hardware/AS5048.cpp \
 Core/Src/quadrature/hardware/TimerModulator.cpp \

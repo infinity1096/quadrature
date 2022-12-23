@@ -54,9 +54,9 @@ void componentInit(){
     AxisConfig axis_config {
         .axis_direction = Direction::NORMAL,
         .mechanical_offset = 0,
-        .encoder_direction = Direction::UNKNOWN,
-        .encoder_phase_offset = 0.0,
-        .encoder_calibrated = false,
+        .encoder_direction = Direction::INVERTED,
+        .encoder_phase_offset = 0.27,
+        .encoder_calibrated = true,
         .pole_pairs = 21,
         .phase_resistance = 0.1,
         .phase_inductance = 0.36e-3,

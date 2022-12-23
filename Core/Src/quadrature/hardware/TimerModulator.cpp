@@ -57,9 +57,9 @@ void TimerModulator::modulate(float32_t Vab0[3], float32_t Vdc) {
 
     SVPWM(Vab0Buffer, Vdc, timingBuffer);
 
-    htimx->Instance->CCR1 = 1749 * timingBuffer[0];
-    htimx->Instance->CCR2 = 1749 * timingBuffer[1];
-    htimx->Instance->CCR3 = 1749 * timingBuffer[2];
+    htimx->Instance->CCR1 = 3499 * timingBuffer[0];
+    htimx->Instance->CCR2 = 3499 * timingBuffer[1];
+    htimx->Instance->CCR3 = 3499 * timingBuffer[2];
 
     
 }

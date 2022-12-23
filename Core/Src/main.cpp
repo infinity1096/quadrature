@@ -16,6 +16,7 @@
 #include "quadrature/components.hpp"
 #include "quadrature/CalibrateCurrentSense.hpp"
 #include "quadrature/CalibrateAxis.hpp"
+#include "quadrature/communication/SimulinkPIDAdjust.hpp"
 
 extern "C" void SystemClock_Config(void);
 
@@ -90,11 +91,10 @@ const osThreadAttr_t telemetryTask_attributes = {
 
 
 struct TelemetryPacket{
-  float32_t Iq;
   float32_t Id;
-  float32_t mech_angle;
-  float32_t elec_angle;
-  float32_t velocity;
+  float32_t Iq;
+  float32_t Id_Target;
+  float32_t Iq_Target;
 };
 
 SimulinkReport<TelemetryPacket,200> reporter;
@@ -103,6 +103,7 @@ TelemetryPacket packet;
 void TelemetryTask(void* argument){
   while (true){
     reporter.checkTransmit();
+    parseSimulinkCommand();
     osDelay(1);
   }
 }
@@ -184,10 +185,12 @@ extern "C" void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi){
     axis_1_control_logic.sensedEncoderUpdate();
 
     axis_1_control_logic.state_estimator.getDQCurrent(&packet.Id, &packet.Iq);
+    packet.Id_Target = axis_1_control_logic.Id_target;
+    packet.Iq_Target = axis_1_control_logic.Iq_target;
 
-    packet.mech_angle = axis_1_control_logic.state_estimator.getAngle();
-    packet.elec_angle = axis_1_control_logic.state_estimator.getElectricalAngle();
-    packet.velocity = axis_1_control_logic.state_estimator.getVelocity();
+    // packet.mech_angle = axis_1_control_logic.state_estimator.getAngle();
+    // packet.elec_angle = axis_1_control_logic.state_estimator.getElectricalAngle();
+    // packet.velocity = axis_1_control_logic.state_estimator.getVelocity();
   }
 }
 

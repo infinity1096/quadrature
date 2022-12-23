@@ -21,15 +21,25 @@ class ControlLogic {
 
     ControlMode control_mode = ControlMode::CURRENT;
 
-    PIDController<false> IqController;
-    PIDController<false> IdController;
     PIDController<true> VelocityController;
     PIDController<true> PositionController;
 
     StateEstimator state_estimator;
 
+    float32_t Id_error = 0; 
+    float32_t Iq_error = 0;
+
+    float32_t Id_target = 0.0;    
     float32_t Iq_target = 0.0;
 
+    float32_t Id_Kp = 0.0;
+    float32_t Id_Ki = 0.0;
+    float32_t Id_integrator = 0.0;
+    
+    float32_t Iq_Kp = 0.0;
+    float32_t Iq_Ki = 0.0;
+    float32_t Iq_integrator = 0.0;
+    
     Axis* axis;
     Ringbuffer<float32_t> buffer;
 };
