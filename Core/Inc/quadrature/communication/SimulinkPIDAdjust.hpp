@@ -15,10 +15,13 @@ struct SimulinkCommandPacket {
     float ID_Target;
     float IQ_Target;
     float electrical_phase_offset;
+    float chirp_freq;
 };
 
 extern char simulinkCommandBuffer[sizeof(SimulinkCommandPacket) + 2 * sizeof(float)];
 extern SimulinkCommandPacket simulinkCommand;
+
+extern bool simulink_command_updated;
 
 void parseSimulinkCommand();
 

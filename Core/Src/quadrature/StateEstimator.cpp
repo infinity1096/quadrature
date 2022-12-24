@@ -17,9 +17,8 @@ void StateEstimator::updateSensedAngle(float32_t angle){
     }
     
     // derivative filtering
-    for (int i = 0; i < STATE_EST_INT_STEPS; i++){
-        derivative_filter_state += STATE_EST_DT * N * (angle - derivative_filter_state) / STATE_EST_INT_STEPS;
-    }
+
+    derivative_filter_state += STATE_EST_DT * N * (angle - derivative_filter_state);
     
     mechanical_velocity_estimate = N * (angle - derivative_filter_state);
 }

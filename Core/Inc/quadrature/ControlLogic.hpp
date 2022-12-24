@@ -43,6 +43,9 @@ class ControlLogic {
     float32_t Iq_Ki = 0.0;
     float32_t Iq_integrator = 0.0;
     
+    float32_t chirp_th = 0.0;
+    float32_t chirp_freq = 0.0;
+
     Axis* axis;
 
 };

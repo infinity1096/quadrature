@@ -56,12 +56,19 @@ void ControlLogic::sensedCurrentUpdate(){
     Vd = Id_Kp * Id_error + Id_integrator;
     Vq = Iq_Kp * Iq_error + Iq_integrator;
     
-    Id_integrator += Id_Ki * Id_error/24000.0;
-    Iq_integrator += Iq_Ki * Iq_error/24000.0;
+    Id_integrator += Id_Ki * Id_error/24000.0f;
+    Iq_integrator += Iq_Ki * Iq_error/24000.0f;
 
+    /*
+    chirp_th += chirp_freq / 24000.0f;
     
+    if (chirp_th >= 1e6){
+        chirp_th = fmod(chirp_th, 2 * M_PI);
+    }
 
-
+    Vdq0[0] = arm_sin_f32(chirp_th);
+    */
+   
     // limit Vdq0 control voltage according to axis config FIXME: 
     // FIXME: system response testing
     Vdq0[0] = clip(Vd, -4, 4);
