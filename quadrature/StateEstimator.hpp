@@ -13,18 +13,15 @@ class StateEstimator{
     void updateSensedAngle(float32_t angle);
     void updateSensedCurrent(float32_t sensedCurrent[3]);
 
+    // query state from estimator
     float32_t getElectricalAngle();
     float32_t getAngle();
     float32_t getVelocity();
     void getDQCurrent(float32_t* Id,  float32_t* Iq);
     void getUnFilteredDQCurrent(float32_t* Id,  float32_t* Iq);
     
-
     void setAxis(Axis* anAxis);
     
-    float32_t Id_complementry_gain = 0.0;
-    float32_t Iq_complementry_gain = 0.0;
-
     protected:
     float32_t Idq0Estimate[3] = {0.0, 0.0, 0.0};
     float32_t Idq0UnFiltered[3] = {0.0, 0.0, 0.0};
@@ -34,8 +31,6 @@ class StateEstimator{
     
     float32_t derivative_filter_state = 0.0;
     bool derivative_initialized = false;
-
-
 
     private:
     float32_t N = 300.0;

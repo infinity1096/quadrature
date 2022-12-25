@@ -51,6 +51,24 @@ void Axis::applyModulation(float32_t Vab0[3]){
     }
 }
 
+void Axis::limitOutputVoltage(float32_t aVdq0Input[3], float32_t aVdq0Output[3]){
+    float32_t theMaxModulationVoltage = fmin(pvccSense->sensed_voltage * 2.0f / 3.0f, axis_config.voltage_limit);
+    float32_t theRequestedModulationVoltageSquared = aVdq0Input[0] * aVdq0Input[0] + aVdq0Input[1] * aVdq0Input[1];
+
+    if (theMaxModulationVoltage * theMaxModulationVoltage < theRequestedModulationVoltageSquared){
+        // output should be limited
+        float32_t requestedModulationVoltage = 1.0f;
+        arm_sqrt_f32(theRequestedModulationVoltageSquared, &requestedModulationVoltage);
+
+        aVdq0Output[0] = aVdq0Input[0] * theMaxModulationVoltage / requestedModulationVoltage;
+        aVdq0Output[1] = aVdq0Input[1] * theMaxModulationVoltage / requestedModulationVoltage;
+        aVdq0Output[2] = aVdq0Input[2];
+    }else{
+        // output should not be limited
+        memcpy(aVdq0Output, aVdq0Input, 3 * sizeof(float32_t));
+    }
+}
+
 void Axis::attachEncoder(Encoder* aEncoder){
     encoder = aEncoder;
 }

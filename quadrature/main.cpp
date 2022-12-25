@@ -185,31 +185,11 @@ extern "C" void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi){
 
 extern "C" void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi){
   if (hspi == &hspi3){
-    // encoder read completed
     axis_1_encoder->encoderReadCompleteCallback();
-    //reporter.record(packet);
     axis_1_control_logic.sensedEncoderUpdate();
-
-    // packet.mech_angle = axis_1_control_logic.state_estimator.getAngle();
-    // packet.elec_angle = axis_1_control_logic.state_estimator.getElectricalAngle();
-    // packet.velocity = axis_1_control_logic.state_estimator.getVelocity();
   }
 }
 
 extern "C" void EncoderTimer(){
   axis_1_encoder->requestRead();
-  
-  axis_1_control_logic.state_estimator.getDQCurrent(&packet.Id, &packet.Iq);
-  axis_1_control_logic.state_estimator.getUnFilteredDQCurrent(&packet.Id_unfiltered, &packet.Iq_unfiltered);
-  
-  packet.Id_Target = axis_1_control_logic.Id_target;
-  packet.Iq_Target = axis_1_control_logic.Iq_target;
-
-  packet.Vd = axis_1_control_logic.Vd_output;
-  packet.Vq = axis_1_control_logic.Vq_output;
-
-  packet.electrical_angle = axis_1_control_logic.state_estimator.getElectricalAngle();
-  packet.velocity = axis_1_control_logic.state_estimator.getVelocity();
-
-  reporter.record(packet);
 }

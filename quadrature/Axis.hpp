@@ -19,6 +19,7 @@ struct AxisConfig{
     bool encoder_calibrated = false;
 
     // maximum limits
+    float32_t voltage_limit = 8;
     float32_t current_limit = 20;
     float32_t velocity_limit = 100;
 
@@ -45,7 +46,9 @@ class Axis{
     bool isCalibrated();
 
     void applyModulation(float32_t Vabc[3]);
+    void limitOutputVoltage(float32_t aVdq0Input[3], float32_t aVdq0Output[3]);
 
+    // link components to axis
     void attachEncoder(Encoder* aEncoder);
     void attachModulator(Modulator* aModulator);
     void attachCurrentSense(long idx, CurrentSense* aSensor);
@@ -60,6 +63,7 @@ class Axis{
     float32_t getRawEncoderValue();
     void applyCalibrationModulation(float32_t Vabc[3]);
 
+    // internal conversion
     float32_t electricalAngleToMechanical(float32_t electrical);
     float32_t mechanicalAngleToElectrical(float32_t mechanical);
 

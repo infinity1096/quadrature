@@ -40,10 +40,9 @@ template<bool derivative_enabled = true> class PIDController {
         I_integrator_state += dt * Ki * error;
 
         // saturation & anti-windup computation
-        float output_saturated = clip(output, -saturation, saturation);
         last_unclipped_output = output;
         
-        return output_saturated;
+        return output;
     }
 
     void antiSaturation(float actualOutput, float dt){
@@ -71,7 +70,6 @@ template<bool derivative_enabled = true> class PIDController {
     bool derivative_initialized;
 
     // output saturation & anti-windup
-    float saturation;
     float back_calculation_coeff;
 };
 

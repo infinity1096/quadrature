@@ -16,38 +16,25 @@ class ControlLogic {
         state_estimator.setAxis(aAxis);
     }
 
+    // function called by Timers/ADC callback periodically
     void sensedCurrentUpdate();
     void sensedEncoderUpdate();
 
-    ControlMode control_mode = ControlMode::CURRENT;
+    ControlMode control_mode = ControlMode::NONE;
 
-    PIDController<true> VelocityController;
-    PIDController<true> PositionController;
+    PIDController<false> Id_controller;
+    PIDController<false> Iq_controller;
+
+    PIDController<true> velocity_controller;
+    PIDController<true> position_controller;
 
     StateEstimator state_estimator;
 
-    float32_t Id_error = 0; 
-    float32_t Iq_error = 0;
-
-    float32_t Id_target = 0.0;    
-    float32_t Iq_target = 0.0;
-
-    float32_t Vd_output = 0.0;
-    float32_t Vq_output = 0.0;
-
-    float32_t Id_Kp = 0.0;
-    float32_t Id_Ki = 0.0;
-    float32_t Id_integrator = 0.0;
-    
-    float32_t Iq_Kp = 0.0;
-    float32_t Iq_Ki = 0.0;
-    float32_t Iq_integrator = 0.0;
-    
-    float32_t chirp_th = 0.0;
-    float32_t chirp_freq = 0.0;
+    float32_t Iq_target = 0;
+    float32_t velocity_target = 0;
+    float32_t position_target = 0;
 
     Axis* axis;
-
 };
 
 
