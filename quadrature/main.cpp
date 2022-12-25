@@ -74,10 +74,12 @@ void StartDefaultTask(void *argument)
 
     axis_1_modulator->hardwareEnable();
 
-    while (!axis_calibrator.isProcessEnded()){
-      axis_calibrator.step();
-      osDelay(1);
-    }
+    /* encoder phase calibration not accurate at all
+      while (!axis_calibrator.isProcessEnded()){
+        axis_calibrator.step();
+        osDelay(1);
+      }
+    */
 
     axis_1->requestArm();
     

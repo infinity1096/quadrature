@@ -78,11 +78,11 @@ void componentInit(){
 
     axis_1_control_logic.Id_controller.Kp = 0.446f;
     axis_1_control_logic.Id_controller.Ki = 812.0f;
-    axis_1_control_logic.Id_controller.back_calculation_coeff = 0.0;
+    axis_1_control_logic.Id_controller.back_calculation_coeff = 1.0;
     
     axis_1_control_logic.Iq_controller.Kp = 0.45f;
     axis_1_control_logic.Iq_controller.Ki = 1200.0f;
-    axis_1_control_logic.Iq_controller.back_calculation_coeff = 0.0;
+    axis_1_control_logic.Iq_controller.back_calculation_coeff = 1.0;
     
     axis_1_control_logic.Id_controller.reset();
     axis_1_control_logic.Iq_controller.reset();
