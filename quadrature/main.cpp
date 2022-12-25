@@ -81,8 +81,11 @@ void StartDefaultTask(void *argument)
       }
     */
 
+    osDelay(100);
+
     axis_1->requestArm();
-    
+    axis_1_control_logic.control_mode = ControlMode::CURRENT;
+    axis_1_control_logic.Iq_target = 0.5;
   /* Infinite loop */
   for(;;)
   {
