@@ -29,6 +29,13 @@ extern "C" {
 
 }
 
+struct TelemetryPacket{
+  float32_t pvcc_voltage;
+};
+
+SimulinkReport<TelemetryPacket,100> reporter;
+TelemetryPacket packet;
+
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
   .name = "defaultTask",
@@ -77,6 +84,8 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
+    packet.pvcc_voltage = pvcc_sense->sensed_voltage;
+    reporter.record(packet);
     osDelay(1);
   }
   /* USER CODE END StartDefaultTask */
@@ -90,26 +99,10 @@ const osThreadAttr_t telemetryTask_attributes = {
 };
 
 
-struct TelemetryPacket{
-  float32_t Id_unfiltered;        // unfiltered D axis current
-  float32_t Iq_unfiltered;        // unfiltered Q axis current
-  float32_t Id;                   // filtered D axis current
-  float32_t Iq;                   // filtered Q axis current
-  float32_t Id_Target;            // D axis current target
-  float32_t Iq_Target;            // Q axis current target
-  float32_t Vd;                   // D axis output Voltage
-  float32_t Vq;                   // Q axis output Voltage
-  float32_t electrical_angle;     // current electrical angle
-  float32_t velocity;             // current mechanical velocity
-};
-
-SimulinkReport<TelemetryPacket,100> reporter;
-TelemetryPacket packet;
-
 void TelemetryTask(void* argument){
   while (true){
     reporter.checkTransmit();
-    parseSimulinkCommand();
+    //parseSimulinkCommand();
     osDelay(1);
   }
 }
@@ -140,6 +133,7 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_ADC1_Init();
+  MX_ADC2_Init();
   MX_FDCAN1_Init();
   MX_I2C1_Init();
   MX_TIM1_Init();
@@ -172,11 +166,15 @@ int main(void)
 uint32_t idx = 0;
 // implements callback function after DMA transfer
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc){
-  axis_1_ch_A->updateCurrent();
-  axis_1_ch_B->updateCurrent();
-  axis_1_ch_C->updateCurrent();
-  
-  axis_1_control_logic.sensedCurrentUpdate();
+  if (hadc == &hadc1){
+    axis_1_ch_A->updateCurrent();
+    axis_1_ch_B->updateCurrent();
+    axis_1_ch_C->updateCurrent();
+    
+    axis_1_control_logic.sensedCurrentUpdate();
+  }else if (hadc == &hadc2){
+    pvcc_sense->updateVoltage();
+  }
 }
 
 extern "C" void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi){

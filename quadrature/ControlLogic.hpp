@@ -20,7 +20,7 @@ class ControlLogic {
     void sensedCurrentUpdate();
     void sensedEncoderUpdate();
 
-    ControlMode control_mode = ControlMode::NONE;
+    ControlMode control_mode = ControlMode::CURRENT;
 
     PIDController<false> Id_controller;
     PIDController<false> Iq_controller;
@@ -30,7 +30,7 @@ class ControlLogic {
 
     StateEstimator state_estimator;
 
-    float32_t Iq_target = 0;
+    float32_t Iq_target = 1.0;
     float32_t velocity_target = 0;
     float32_t position_target = 0;
 

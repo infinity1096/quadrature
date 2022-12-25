@@ -11,6 +11,7 @@ extern "C" {
 #endif
 
 uint16_t adc_fields[3];
+uint16_t volt_adc;
 
 CurrentSense* axis_1_ch_A = nullptr;
 CurrentSense* axis_1_ch_B = nullptr;
@@ -38,8 +39,6 @@ void componentInit(){
     axis_1_ch_B = new CurrentSense(adc_fields + 1, unitVoltageSense, shuntCurrentSense);
     axis_1_ch_C = new CurrentSense(adc_fields + 2, unitVoltageSense, shuntCurrentSense);
     
-    // FIXME:
-    uint16_t volt_adc = 0;
     pvcc_sense = new VoltageSense(&volt_adc, pvccSenseConfig);
 
     axis_1_modulator = new TimerModulator(&htim1);
@@ -77,9 +76,21 @@ void componentInit(){
 
     axis_1_control_logic.setAxis(axis_1);
 
+    axis_1_control_logic.Id_controller.Kp = 0.446f;
+    axis_1_control_logic.Id_controller.Ki = 812.0f;
+    axis_1_control_logic.Id_controller.back_calculation_coeff = 0.0;
+    
+    axis_1_control_logic.Iq_controller.Kp = 0.45f;
+    axis_1_control_logic.Iq_controller.Ki = 1200.0f;
+    axis_1_control_logic.Iq_controller.back_calculation_coeff = 0.0;
+    
+    axis_1_control_logic.Id_controller.reset();
+    axis_1_control_logic.Iq_controller.reset();
+
     // start ADC read
     HAL_ADC_Start_DMA(&hadc1, (uint32_t*)(adc_fields), 3);
-    
+    HAL_ADC_Start_DMA(&hadc2, (uint32_t*)&volt_adc, 1);
+
     // start encoder Timer
     HAL_TIM_Base_Start_IT(&htim2);
 }

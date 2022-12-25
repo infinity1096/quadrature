@@ -51,11 +51,11 @@ void ControlLogic::sensedCurrentUpdate(){
     // feedback actual voltage output to PID for anti-saturation
     // cautious: even if Ki = 0, if Kp \ne 0, the integrator will still increase if
     // this control loop is called but no voltage can be modulated.     
-    Id_controller.antiSaturation(Vdq0_output[0], CURRENT_LOOP_DT);
-    Iq_controller.antiSaturation(Vdq0_output[1], CURRENT_LOOP_DT);
+    //Id_controller.antiSaturation(Vdq0_output[0], CURRENT_LOOP_DT);
+    //Iq_controller.antiSaturation(Vdq0_output[1], CURRENT_LOOP_DT);
 
     // apply modulation
-    inversePark(Vdq0, electrical_angle, Vab0);
+    inversePark(Vdq0_output, electrical_angle, Vab0);
     axis->applyModulation(Vab0);
 }
 

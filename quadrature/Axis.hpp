@@ -19,7 +19,7 @@ struct AxisConfig{
     bool encoder_calibrated = false;
 
     // maximum limits
-    float32_t voltage_limit = 8;
+    float32_t voltage_limit = 4;
     float32_t current_limit = 20;
     float32_t velocity_limit = 100;
 
