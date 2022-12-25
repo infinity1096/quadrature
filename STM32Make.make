@@ -36,21 +36,6 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES =  \
-Core/Src/adc.c \
-Core/Src/cordic.c \
-Core/Src/dma.c \
-Core/Src/fdcan.c \
-Core/Src/gpio.c \
-Core/Src/i2c.c \
-Core/Src/main_old.c \
-Core/Src/spi.c \
-Core/Src/stm32g4xx_hal_msp.c \
-Core/Src/stm32g4xx_hal_timebase_tim.c \
-Core/Src/stm32g4xx_it.c \
-Core/Src/syscalls.c \
-Core/Src/sysmem.c \
-Core/Src/system_stm32g4xx.c \
-Core/Src/tim.c \
 Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.c \
 Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc.c \
 Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc_ex.c \
@@ -92,24 +77,39 @@ Middlewares/Third_Party/FreeRTOS/Source/queue.c \
 Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c \
 Middlewares/Third_Party/FreeRTOS/Source/tasks.c \
 Middlewares/Third_Party/FreeRTOS/Source/timers.c \
-USB_Device/App/usb_device.c \
-USB_Device/App/usbd_cdc_if.c \
-USB_Device/App/usbd_desc.c \
-USB_Device/Target/usbd_conf.c
+Middlewares/USB_Device/App/usb_device.c \
+Middlewares/USB_Device/App/usbd_cdc_if.c \
+Middlewares/USB_Device/App/usbd_desc.c \
+Middlewares/USB_Device/Target/usbd_conf.c \
+quadrature/stm32/adc.c \
+quadrature/stm32/cordic.c \
+quadrature/stm32/dma.c \
+quadrature/stm32/fdcan.c \
+quadrature/stm32/gpio.c \
+quadrature/stm32/i2c.c \
+quadrature/stm32/main_old.c \
+quadrature/stm32/spi.c \
+quadrature/stm32/stm32g4xx_hal_msp.c \
+quadrature/stm32/stm32g4xx_hal_timebase_tim.c \
+quadrature/stm32/stm32g4xx_it.c \
+quadrature/stm32/syscalls.c \
+quadrature/stm32/sysmem.c \
+quadrature/stm32/system_stm32g4xx.c \
+quadrature/stm32/tim.c
 
 
 CPP_SOURCES = \
-Core/Src/main.cpp \
-Core/Src/quadrature/Axis.cpp \
-Core/Src/quadrature/CalibrateCurrentSense.cpp \
-Core/Src/quadrature/ControlLogic.cpp \
-Core/Src/quadrature/PID.cpp \
-Core/Src/quadrature/StateEstimator.cpp \
-Core/Src/quadrature/communication/SimulinkPIDAdjust.cpp \
-Core/Src/quadrature/components.cpp \
-Core/Src/quadrature/hardware/AS5048.cpp \
-Core/Src/quadrature/hardware/TimerModulator.cpp \
-Core/Src/quadrature/safety.cpp
+quadrature/Axis.cpp \
+quadrature/CalibrateCurrentSense.cpp \
+quadrature/ControlLogic.cpp \
+quadrature/PID.cpp \
+quadrature/StateEstimator.cpp \
+quadrature/communication/SimulinkPIDAdjust.cpp \
+quadrature/components.cpp \
+quadrature/hardware/AS5048.cpp \
+quadrature/hardware/TimerModulator.cpp \
+quadrature/main.cpp \
+quadrature/safety.cpp
 
 
 # ASM sources
@@ -180,11 +180,6 @@ AS_INCLUDES = \
 
 # C includes
 C_INCLUDES =  \
--ICore/Inc \
--ICore/Inc/libs \
--ICore/Inc/quadrature \
--ICore/Inc/quadrature/communication \
--ICore/Inc/quadrature/hardware \
 -IDrivers/CMSIS/DSP/Include \
 -IDrivers/CMSIS/Device/ST/STM32G4xx/Include \
 -IDrivers/CMSIS/Include \
@@ -195,8 +190,13 @@ C_INCLUDES =  \
 -IMiddlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 \
 -IMiddlewares/Third_Party/FreeRTOS/Source/include \
 -IMiddlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F \
--IUSB_Device/App \
--IUSB_Device/Target
+-IMiddlewares/USB_Device/App \
+-IMiddlewares/USB_Device/Target \
+-Iquadrature \
+-Iquadrature/communication \
+-Iquadrature/hardware \
+-Iquadrature/libs \
+-Iquadrature/stm32
 
 
 

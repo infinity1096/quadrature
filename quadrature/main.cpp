@@ -12,11 +12,11 @@
 #include "gpio.h"
 
 #include "arm_math.h"
-#include "quadrature/communication/simulink_reporter.hpp"
-#include "quadrature/components.hpp"
-#include "quadrature/CalibrateCurrentSense.hpp"
-#include "quadrature/CalibrateAxis.hpp"
-#include "quadrature/communication/SimulinkPIDAdjust.hpp"
+#include "communication/simulink_reporter.hpp"
+#include "components.hpp"
+#include "CalibrateCurrentSense.hpp"
+#include "CalibrateAxis.hpp"
+#include "communication/SimulinkPIDAdjust.hpp"
 
 extern "C" void SystemClock_Config(void);
 

@@ -75,9 +75,8 @@ excludes:
 # Include directories (directories containing .h or .hpp files)
 # If a CubeMX makefile is present it will automatically include the include directories from that makefile.
 includeDirectories: 
-  - Core/Inc
-  - USB_Device/App
-  - USB_Device/Target
+  - Middlewares/USB_Device/App
+  - Middlewares/USB_Device/Target
   - Drivers/STM32G4xx_HAL_Driver/Inc
   - Drivers/STM32G4xx_HAL_Driver/Inc/Legacy
   - Middlewares/ST/STM32_USB_Device_Library/Core/Inc
@@ -88,12 +87,7 @@ includeDirectories:
   - Middlewares/Third_Party/FreeRTOS/Source/include 
   - Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 
   - Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F
-  - Inc/**
-  - Core/Inc/**
-  - Core/Lib/**
-  - Src/**
-  - Core/Src/**
-  - Core/Lib/**
+  - quadrature/**
 
 
 # Files that should be included in the compilation.
@@ -103,20 +97,10 @@ includeDirectories:
 # these should be escaped with a: \ or the name should be in double quotes e.g. "HARDWARE_DRIVER*.c"
 sourceFiles:  
   - startup_stm32g431xx.s
-  - Core/Src/main.c
-  - Core/Src/gpio.c
-  - Core/Src/adc.c
-  - Core/Src/cordic.c
-  - Core/Src/fdcan.c
-  - Core/Src/i2c.c
-  - Core/Src/spi.c
-  - Core/Src/tim.c
-  - Core/Src/stm32g4xx_it.c
-  - Core/Src/stm32g4xx_hal_msp.c
-  - USB_Device/Target/usbd_conf.c
-  - USB_Device/App/usb_device.c
-  - USB_Device/App/usbd_desc.c
-  - USB_Device/App/usbd_cdc_if.c
+  - Middlewares/USB_Device/Target/usbd_conf.c
+  - Middlewares/USB_Device/App/usb_device.c
+  - Middlewares/USB_Device/App/usbd_desc.c
+  - Middlewares/USB_Device/App/usbd_cdc_if.c
   - Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pcd.c
   - Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pcd_ex.c
   - Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_ll_usb.c
@@ -144,15 +128,12 @@ sourceFiles:
   - Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_spi_ex.c
   - Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim.c
   - Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.c
-  - Core/Src/system_stm32g4xx.c
   - Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c
   - Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c
   - Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c
   - Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
-  - Src/**
-  - Core/Src/**
-  - Core/Lib/**
   - Middlewares/Third_Party/FreeRTOS/Source/**
+  - quadrature/**
 
 
 # When no makefile is present it will show a warning pop-up.

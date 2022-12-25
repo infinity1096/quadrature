@@ -1,4 +1,4 @@
-#include "quadrature/components.hpp"
+#include "components.hpp"
 
 #ifdef __cplusplus
 extern "C" {

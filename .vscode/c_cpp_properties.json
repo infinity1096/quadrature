@@ -3,11 +3,6 @@
     {
       "name": "STM32",
       "includePath": [
-        "Core/Inc",
-        "Core/Inc/libs",
-        "Core/Inc/quadrature",
-        "Core/Inc/quadrature/communication",
-        "Core/Inc/quadrature/hardware",
         "Drivers/CMSIS/DSP/Include",
         "Drivers/CMSIS/Device/ST/STM32G4xx/Include",
         "Drivers/CMSIS/Include",
@@ -18,8 +13,13 @@
         "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2",
         "Middlewares/Third_Party/FreeRTOS/Source/include",
         "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F",
-        "USB_Device/App",
-        "USB_Device/Target"
+        "Middlewares/USB_Device/App",
+        "Middlewares/USB_Device/Target",
+        "quadrature",
+        "quadrature/communication",
+        "quadrature/hardware",
+        "quadrature/libs",
+        "quadrature/stm32"
       ],
       "defines": [
         "ARM_MATH_CM4",
