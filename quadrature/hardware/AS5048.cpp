@@ -30,7 +30,7 @@ bool AS5048::initialize() {
     // clear error flag
     HAL_GPIO_WritePin(cs_GPIOx, cs_GPIO_Pin, GPIO_PIN_RESET); // CS <- LOW
     uint16_t clear_error_cmd = AS5048A_CLEAR_ERROR_FLAG_CMD;
-    HAL_SPI_Receive(hspix,(uint8_t*)&clear_error_cmd, 2, 1000);
+    HAL_SPI_Receive(hspix,(uint8_t*)&clear_error_cmd, 1, 1000);
     HAL_GPIO_WritePin(cs_GPIOx, cs_GPIO_Pin, GPIO_PIN_SET); // CS <- HIGH
 
     HAL_Delay(10);

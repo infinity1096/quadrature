@@ -26,7 +26,7 @@
         "STM32G431xx",
         "USE_HAL_DRIVER"
       ],
-      "compilerPath": "C:\\PROGRAM FILES (X86)\\GNU ARM EMBEDDED TOOLCHAIN\\10 2021.10\\BIN\\ARM-NONE-EABI-G++.EXE"
+      "compilerPath": "C:\\PROGRAM FILES (X86)\\ARM GNU TOOLCHAIN ARM-NONE-EABI\\12.2 REL1\\BIN\\ARM-NONE-EABI-G++.EXE"
     }
   ],
   "version": 4

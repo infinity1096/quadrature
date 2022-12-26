@@ -22,7 +22,7 @@ TARGET = quadrature
 # debug build?
 DEBUG = 1
 # optimization
-OPT = -O3
+OPT = -Os
 
 
 #######################################
@@ -127,7 +127,7 @@ PREFIX = arm-none-eabi-
 POSTFIX = "
 # The gcc compiler bin path can be either defined in make command via GCC_PATH variable (> make GCC_PATH=xxx)
 # either it can be added to the PATH environment variable.
-GCC_PATH="C:/Program Files (x86)/GNU Arm Embedded Toolchain/10 2021.10/bin
+GCC_PATH="C:/PROGRAM FILES (X86)/ARM GNU TOOLCHAIN ARM-NONE-EABI/12.2 REL1/BIN
 ifdef GCC_PATH
 CXX = $(GCC_PATH)/$(PREFIX)g++$(POSTFIX)
 CC = $(GCC_PATH)/$(PREFIX)gcc$(POSTFIX)

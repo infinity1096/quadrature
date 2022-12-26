@@ -44,9 +44,10 @@ extern "C" void processUSBReceive(char* buf, unsigned long* len){
         return;
     }
 
-    if (*len <= COMMAND_BUFFER_SIZE){
+    if (*len <= COMMAND_BUFFER_SIZE-1){
         memcpy(commandBuffer, buf, *len);
         dataLength = *len;
+        commandBuffer[*len] = '\0';
         command_updated = true;
     }
 }

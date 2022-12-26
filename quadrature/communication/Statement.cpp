@@ -60,11 +60,58 @@ bool DisarmAxisStatement::parseAscii(char* buf, int len){
 // ---------- Set parameter command ----------
 
 void SetParameterStatement::execute(){
-    // TODO:  s
+    if (floatField != nullptr){
+        *floatField = floatVal;
+    }
 }
 
 bool SetParameterStatement::recognizeAscii(char* buf, int len){
     return len > 4 && strncmp(buf, "set ", 4) == 0;
+}
+
+// from https://stackoverflow.com/questions/3825392/string-to-float-conversion
+// atof is too big to fit the memory
+float small_atof(const char *s)
+{
+    int f, m, sign, d=1;
+    f = m = 0;
+
+    sign = (s[0] == '-') ? -1 : 1;
+    if (s[0] == '-' || s[0] == '+') s++;
+
+    for (; *s != '.' && *s; s++) {
+            f = (*s-'0') + f*10;
+    }
+    if (*s == '.')
+            for (++s; *s; s++) {
+                    m = (*s-'0') + m*10;
+                    d *= 10;
+            }
+    return sign*(f + (float)m/d);
+}
+
+bool is_number(std::string value){
+    int num_dot = 0;
+    for(int i = 0; i < value.size(); i++){
+        char ch = value[i];
+        if (i == 0 && !(('0' <= ch && ch <= '9') || ch == '.' || ch == '-')){
+            return false;
+        }
+
+        if (i != 0 && !(('0' <= ch && ch <= '9') || ch == '.')){
+            return false;
+        }
+
+        if (ch == '.'){
+            num_dot++;
+        }
+
+        if (num_dot >= 2){
+            return false;
+        }
+    }
+
+    return true;
 }
 
 bool SetParameterStatement::parseAscii(char* buf, int len){
@@ -78,15 +125,27 @@ bool SetParameterStatement::parseAscii(char* buf, int len){
     if (secondSpace != std::string::npos){
         field = str.substr(4, secondSpace - 4);
         value = str.substr(secondSpace+1, (len - secondSpace - 2));
+
+        if (!is_number(value)){
+            return false;
+        }
+
+        floatVal = small_atof(value.c_str());
+    }
+
+    floatField = getParameter(field);
+    if (floatField != nullptr){
         return true;
     }
 
-    return false; // FIXME: 
+    return false;
 }
+
+
 
 // ---------- Flash Save Command ----------
 void FlashSaveStatement::execute(){
-    // TODO: 
+    listParameters();
 }
 
 bool FlashSaveStatement::recognizeAscii(char* buf, int len){
@@ -99,7 +158,7 @@ bool FlashSaveStatement::parseAscii(char* buf, int len){
 
 // ---------- List Parameter Command ----------
 void ListParametersStatement::execute(){
-    // TODO: 
+    listParameters();
 }
 
 bool ListParametersStatement::recognizeAscii(char* buf, int len){
@@ -107,20 +166,27 @@ bool ListParametersStatement::recognizeAscii(char* buf, int len){
 }
 
 bool ListParametersStatement::parseAscii(char* buf, int len){
-    return len == 5 && strncmp(buf, "list\n", 5) == 0;
+    return recognizeAscii(buf, len);
 }
 
 // ---------- Set Current Command ----------
 void SetCurrentStatement::execute(){
-    // TODO: 
+    setCurrent(currentGoal);
 }
 
 bool SetCurrentStatement::recognizeAscii(char* buf, int len){
-    return len == 5 && strncmp(buf, "list\n", 5) == 0;
+    return len > 9 && strncmp(buf, "current ", 8) == 0;
 }
 
 bool SetCurrentStatement::parseAscii(char* buf, int len){
-    return len == 5 && strncmp(buf, "list\n", 5) == 0;
+    
+    std::string str(buf+8, len-9);
+    if (is_number(str)){
+        currentGoal = small_atof(str.c_str());
+        return true;
+    }
+
+    return false;
 }
 
 // ---------- Set Torque Command ----------
@@ -138,15 +204,21 @@ bool SetTorqueStatement::parseAscii(char* buf, int len){
 
 // ---------- Set Velocity Command ----------
 void SetVelocityStatement::execute(){
-    // TODO: 
+    setVelocity(velocityGoal);
 }
 
 bool SetVelocityStatement::recognizeAscii(char* buf, int len){
-    return len == 5 && strncmp(buf, "list\n", 5) == 0;
+    return len > 10 && strncmp(buf, "velocity ", 9) == 0;
 }
 
 bool SetVelocityStatement::parseAscii(char* buf, int len){
-    return len == 5 && strncmp(buf, "list\n", 5) == 0;
+        std::string str(buf+9, len-10);
+    if (is_number(str)){
+        velocityGoal = small_atof(str.c_str());
+        return true;
+    }
+
+    return false;
 }
 
 // ---------- Set Position Command ----------

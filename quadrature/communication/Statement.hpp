@@ -50,6 +50,7 @@ class SetParameterStatement : public Statement {
     std::string field;
     std::string value;
 
+    float* floatField = nullptr;
     float floatVal = 0.0;
 };
 
@@ -75,6 +76,9 @@ class SetCurrentStatement : public Statement {
 
     bool recognizeAscii(char* buf, int len) override;
     bool parseAscii(char* buf, int len) override; 
+
+    private:
+    float currentGoal = 0;
 };
 
 class SetTorqueStatement : public Statement {
@@ -91,6 +95,9 @@ class SetVelocityStatement : public Statement {
 
     bool recognizeAscii(char* buf, int len) override;
     bool parseAscii(char* buf, int len) override; 
+
+    private:
+    float velocityGoal = 0;
 };
 
 class SetPositionStatement : public Statement {

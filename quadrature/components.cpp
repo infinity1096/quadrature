@@ -1,4 +1,5 @@
 #include "components.hpp"
+#include <map>
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,6 +27,8 @@ Axis* axis_1;
 
 ControlLogic axis_1_control_logic;
 
+std::map<std::string, float*> field_map;
+void initFieldMap();
 void componentInit(){
     
     VoltageSenseConfig unitVoltageSense;
@@ -87,6 +90,9 @@ void componentInit(){
     axis_1_control_logic.Id_controller.reset();
     axis_1_control_logic.Iq_controller.reset();
 
+    // build component tree
+    initFieldMap();
+
     // start ADC read
     HAL_ADC_Start_DMA(&hadc1, (uint32_t*)(adc_fields), 3);
     HAL_ADC_Start_DMA(&hadc2, (uint32_t*)&volt_adc, 1);
@@ -94,3 +100,60 @@ void componentInit(){
     // start encoder Timer
     HAL_TIM_Base_Start_IT(&htim2);
 }
+
+void initFieldMap(){
+    field_map["id_kp"] = &axis_1_control_logic.Id_controller.Kp;
+    field_map["id_ki"] = &axis_1_control_logic.Id_controller.Ki;
+    field_map["id_bc"] = &axis_1_control_logic.Id_controller.back_calculation_coeff;
+    
+    field_map["iq_kp"] = &axis_1_control_logic.Iq_controller.Kp;
+    field_map["iq_ki"] = &axis_1_control_logic.Iq_controller.Ki;
+    field_map["iq_bc"] = &axis_1_control_logic.Iq_controller.back_calculation_coeff;
+    
+    field_map["v_kp"] = &axis_1_control_logic.velocity_controller.Kp;
+    field_map["v_ki"] = &axis_1_control_logic.velocity_controller.Ki;
+    field_map["v_kd"] = &axis_1_control_logic.velocity_controller.Kd;
+    field_map["v_n"] =  &axis_1_control_logic.velocity_controller.N;
+    field_map["v_bc"] = &axis_1_control_logic.velocity_controller.back_calculation_coeff;
+    
+    field_map["p_kp"] = &axis_1_control_logic.position_controller.Kp;
+    field_map["p_ki"] = &axis_1_control_logic.position_controller.Ki;
+    field_map["p_kd"] = &axis_1_control_logic.position_controller.Kd;
+    field_map["p_n"] =  &axis_1_control_logic.position_controller.N;
+    field_map["p_bc"] = &axis_1_control_logic.position_controller.back_calculation_coeff;
+}
+
+#if 0
+void buildComponentTree(){
+    fieldTreeRoot = new FieldTreeNode("axis1");
+
+    auto IdPID = new FieldTreeNode("IdPID");
+    IdPID->addChild(new AdjustableField("p", &axis_1_control_logic.Id_controller.Kp));
+    IdPID->addChild(new AdjustableField("i", &axis_1_control_logic.Id_controller.Ki));
+    IdPID->addChild(new AdjustableField("back_calc", &axis_1_control_logic.Id_controller.back_calculation_coeff));
+
+    auto IqPID = new FieldTreeNode("IqPID");    
+    IqPID->addChild(new AdjustableField("p", &axis_1_control_logic.Iq_controller.Kp));
+    IqPID->addChild(new AdjustableField("i", &axis_1_control_logic.Iq_controller.Ki));
+    IqPID->addChild(new AdjustableField("back_calc", &axis_1_control_logic.Iq_controller.back_calculation_coeff));
+
+    auto VelPID = new FieldTreeNode("VelPID");    
+    VelPID->addChild(new AdjustableField("p", &axis_1_control_logic.velocity_controller.Kp));
+    VelPID->addChild(new AdjustableField("i", &axis_1_control_logic.velocity_controller.Ki));
+    VelPID->addChild(new AdjustableField("d", &axis_1_control_logic.velocity_controller.Kd));
+    VelPID->addChild(new AdjustableField("N", &axis_1_control_logic.velocity_controller.N));
+    VelPID->addChild(new AdjustableField("back_calc", &axis_1_control_logic.velocity_controller.back_calculation_coeff));
+
+    auto PosPID = new FieldTreeNode("PosPID");    
+    PosPID->addChild(new AdjustableField("p", &axis_1_control_logic.position_controller.Kp));
+    PosPID->addChild(new AdjustableField("i", &axis_1_control_logic.position_controller.Ki));
+    PosPID->addChild(new AdjustableField("d", &axis_1_control_logic.position_controller.Kd));
+    PosPID->addChild(new AdjustableField("N", &axis_1_control_logic.position_controller.N));
+    PosPID->addChild(new AdjustableField("back_calc", &axis_1_control_logic.position_controller.back_calculation_coeff));
+
+    fieldTreeRoot->addChild(IdPID);
+    fieldTreeRoot->addChild(IqPID);
+    fieldTreeRoot->addChild(VelPID);
+    fieldTreeRoot->addChild(PosPID);
+}
+#endif

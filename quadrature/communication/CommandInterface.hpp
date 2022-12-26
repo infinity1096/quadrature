@@ -5,9 +5,9 @@
 
 bool armAxis();
 bool disarmAxis();
-bool setParameter(std::string name, std::string value);
+float* getParameter(std::string name);
 bool saveConfig();
-bool dumpParameters();
+bool listParameters();
 bool setCurrent(float value);
 bool setTorque(float value);
 bool setVelocity(float value);
