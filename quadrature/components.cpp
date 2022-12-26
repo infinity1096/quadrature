@@ -50,19 +50,19 @@ void componentInit(){
         while (1) {}
     }
 
-    AxisConfig axis_config {
-        .axis_direction = Direction::NORMAL,
-        .mechanical_offset = 0,
-        .encoder_direction = Direction::INVERTED,
-        .encoder_phase_offset = 0.27,
-        .encoder_calibrated = true,
-        .pole_pairs = 21,
-        .phase_resistance = 0.1,
-        .phase_inductance = 0.36e-3,
-        .torque_constant = 0.056172,
-        .motor_calibrated = true
-    };
+    AxisConfig axis_config;
 
+    axis_config.axis_direction = Direction::NORMAL;
+    axis_config.mechanical_offset = 0;
+    axis_config.encoder_direction = Direction::INVERTED;
+    axis_config.encoder_phase_offset = 0.27;
+    axis_config.encoder_calibrated = true;
+    axis_config.pole_pairs = 21;
+    axis_config.phase_resistance = 0.1;
+    axis_config.phase_inductance = 0.36e-3;
+    axis_config.torque_constant = 0.056172;
+    axis_config.motor_calibrated = true;
+    
     axis_1 = new Axis(axis_config);
 
     axis_1->attachEncoder(axis_1_encoder);

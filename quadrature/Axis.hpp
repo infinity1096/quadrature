@@ -42,6 +42,8 @@ class Axis{
     // interface to axis from control logic
     bool requestArm();
     void disarm();
+
+    bool isArmed();
     
     bool isCalibrated();
 

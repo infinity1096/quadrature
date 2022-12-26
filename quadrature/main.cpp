@@ -16,7 +16,7 @@
 #include "components.hpp"
 #include "CalibrateCurrentSense.hpp"
 #include "CalibrateAxis.hpp"
-#include "communication/SimulinkPIDAdjust.hpp"
+#include "communication/CommandProcess.hpp"
 
 extern "C" void SystemClock_Config(void);
 
@@ -90,7 +90,7 @@ void StartDefaultTask(void *argument)
   for(;;)
   {
     packet.pvcc_voltage = pvcc_sense->sensed_voltage;
-    reporter.record(packet);
+    //reporter.record(packet);
     osDelay(1);
   }
   /* USER CODE END StartDefaultTask */
@@ -107,7 +107,7 @@ const osThreadAttr_t telemetryTask_attributes = {
 void TelemetryTask(void* argument){
   while (true){
     reporter.checkTransmit();
-    //parseSimulinkCommand();
+    parseCommand();
     osDelay(1);
   }
 }

@@ -41,6 +41,10 @@ void Axis::disarm() {
     modulator->hardwareDisable();
 }
 
+bool Axis::isArmed() {
+    return is_armed;
+}
+
 bool Axis::isCalibrated() {
     return axis_config.encoder_calibrated && axis_config.motor_calibrated && axis_config.encoder_direction != Direction::UNKNOWN;
 }

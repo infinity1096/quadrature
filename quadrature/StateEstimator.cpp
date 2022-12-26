@@ -27,7 +27,6 @@ void StateEstimator::updateSensedCurrent(float32_t sensedCurrent[3]){
     
     forwardClarke(sensedCurrent, Iab0_buffer);
     forwardPark(Iab0_buffer, electrical_angle_estimate, Idq0Estimate);
-
 }
 
 float32_t StateEstimator::getElectricalAngle(){

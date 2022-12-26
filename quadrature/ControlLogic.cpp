@@ -14,6 +14,11 @@ void ControlLogic::sensedCurrentUpdate(){
     // update state estimator
     state_estimator.updateSensedCurrent(sensed_current);
 
+    // check is axis armed
+    if (!axis->isArmed()){
+        return;
+    }
+
     // fetch reference signal
     float32_t Id_target_local = 0.0;
     float32_t Iq_target_local = 0.0;

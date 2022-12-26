@@ -104,7 +104,9 @@ quadrature/CalibrateCurrentSense.cpp \
 quadrature/ControlLogic.cpp \
 quadrature/PID.cpp \
 quadrature/StateEstimator.cpp \
-quadrature/communication/SimulinkPIDAdjust.cpp \
+quadrature/communication/CommandInterface.cpp \
+quadrature/communication/CommandProcess.cpp \
+quadrature/communication/Statement.cpp \
 quadrature/components.cpp \
 quadrature/hardware/AS5048.cpp \
 quadrature/hardware/TimerModulator.cpp \
