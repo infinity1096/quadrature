@@ -6,6 +6,7 @@ extern "C" {
 #endif
 
 #include "adc.h"
+#include "cordic.h"
 
 #ifdef __cplusplus
 }
@@ -92,6 +93,19 @@ void componentInit(){
 
     // build component tree
     initFieldMap();
+
+    // start cordic and set to sine function
+    CORDIC_ConfigTypeDef cordicConfig{
+        .Function   = CORDIC_FUNCTION_SINE,
+        .Scale      = CORDIC_SCALE_0,
+        .InSize     = CORDIC_INSIZE_32BITS,
+        .OutSize    = CORDIC_OUTSIZE_32BITS,
+        .NbWrite    = CORDIC_NBWRITE_1,
+        .NbRead     = CORDIC_NBREAD_2,
+        .Precision  = CORDIC_PRECISION_3CYCLES
+    };
+    
+    HAL_CORDIC_Configure(&hcordic, &cordicConfig);
 
     // start ADC read
     HAL_ADC_Start_DMA(&hadc1, (uint32_t*)(adc_fields), 3);

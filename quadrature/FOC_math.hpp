@@ -7,17 +7,26 @@ extern "C" {
 
 #include "arm_math.h"
 #include "math.h"
+#include "cordic.h"
 
 #ifdef __cplusplus
 }
 #endif
 
 #define USE_FPU_FOR_FOC_MATH
+#define USE_CORDIC_FOR_FOC_MATH
+
 
 #define SQRT3      1.73205080756888f
 #define INV_SQRT3  0.577350269189626f
 #define SQRT3_DIV2 0.866025403784439f
 #define SQRT3_DIV3 0.577350269189626f
+
+#define Q31_SCALAR (float)M_PI
+#define F32_TO_Q31(F) (int32_t)((fmodf((F)+Q31_SCALAR,2.f*Q31_SCALAR) + ((F)<-Q31_SCALAR?Q31_SCALAR:-Q31_SCALAR)) * ((float)(INT32_MAX+1u)/Q31_SCALAR))
+#define Q31_TO_F32(Q) ((int32_t)(Q) / (float)(INT32_MAX+1u))
+#define CORDIC_COS_SIN(RAD,COS_VAR,SIN_VAR) { hcordic.Instance->WDATA = F32_TO_Q31(RAD); \
+  (COS_VAR) = Q31_TO_F32(hcordic.Instance->RDATA); (SIN_VAR) = Q31_TO_F32(hcordic.Instance->RDATA); }
 
 
 __INLINE void forwardClarke(float32_t Vabc[3], float32_t Vab0[3]){
@@ -34,12 +43,17 @@ __INLINE void inverseClarke(float32_t Vab0[3], float32_t Vabc[3]){
 
 __INLINE void forwardPark(float32_t Vab0[3], float32_t theta_e, float32_t Vdq0[3]){
     float32_t sin_theta, cos_theta;
+
+    #ifdef USE_CORDIC_FOR_FOC_MATH
+        CORDIC_COS_SIN(theta_e, sin_theta, cos_theta);
+    #else
     #ifdef USE_FPU_FOR_FOC_MATH
         sin_theta = arm_sin_f32(theta_e);
         cos_theta = arm_cos_f32(theta_e);
     #else
         sin_theta = sin(theta_e);
         cos_theta = cos(theta_e);
+    #endif
     #endif
 
     Vdq0[0] =  cos_theta * Vab0[0] + sin_theta * Vab0[1];
@@ -49,12 +63,16 @@ __INLINE void forwardPark(float32_t Vab0[3], float32_t theta_e, float32_t Vdq0[3
 
 __INLINE void inversePark(float32_t Vdq0[3], float32_t theta_e, float32_t Vab0[3]){
     float32_t sin_theta, cos_theta;
-    #ifdef USE_FPU_FOR_FOC_MATH        
+    #ifdef USE_CORDIC_FOR_FOC_MATH
+        CORDIC_COS_SIN(theta_e, sin_theta, cos_theta);
+    #else
+    #ifdef USE_FPU_FOR_FOC_MATH
         sin_theta = arm_sin_f32(theta_e);
         cos_theta = arm_cos_f32(theta_e);
     #else
         sin_theta = sin(theta_e);
         cos_theta = cos(theta_e);
+    #endif
     #endif
 
     Vab0[0] = cos_theta * Vdq0[0] - sin_theta * Vdq0[1];
