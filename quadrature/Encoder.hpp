@@ -11,13 +11,8 @@ class Encoder : public SafetyComponent{
     virtual bool initialize()=0;
     virtual void encoderReadCompleteCallback()=0;
 
-    float32_t getAbsolutePosition(){
-        return (float32_t) absolute_position / (float32_t) ENCODER_PERIOD * M_TWOPI;
-    }
-
-    float32_t getAccumulatedPosition(){
-        return getAbsolutePosition() + M_TWOPI * num_rotation;
-    }
+    float32_t getAbsolutePosition();
+    float32_t getAccumulatedPosition();
 
     bool is_data_valid = false;
 

@@ -17,6 +17,7 @@ struct VoltageSenseConfig{
 
 class VoltageSense {
     public:
+    VoltageSense(){}
     VoltageSense(uint16_t* adcDataField, VoltageSenseConfig aConfig) : config(aConfig), adc_field(adcDataField) {}
 
     float32_t convertUnitToVoltage(uint16_t rawUnit){
@@ -39,6 +40,7 @@ class VoltageSense {
 
 class CurrentSense : public VoltageSense {
     public:
+    CurrentSense(){}
     CurrentSense(uint16_t* adcDataField, VoltageSenseConfig voltageConfig, CurrentSenseConfig currentConfig) : VoltageSense(adcDataField, voltageConfig), config(currentConfig) {}
 
     // current * shunt_res * amplification = (ADC_sense - ADC_base) / 4096 * AVCC_voltage

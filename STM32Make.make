@@ -102,6 +102,7 @@ CPP_SOURCES = \
 quadrature/Axis.cpp \
 quadrature/CalibrateCurrentSense.cpp \
 quadrature/ControlLogic.cpp \
+quadrature/Encoder.cpp \
 quadrature/PID.cpp \
 quadrature/StateEstimator.cpp \
 quadrature/communication/CommandInterface.cpp \
@@ -127,7 +128,7 @@ PREFIX = arm-none-eabi-
 POSTFIX = "
 # The gcc compiler bin path can be either defined in make command via GCC_PATH variable (> make GCC_PATH=xxx)
 # either it can be added to the PATH environment variable.
-GCC_PATH="C:/Program Files (x86)/GNU Arm Embedded Toolchain/10 2021.10/bin
+GCC_PATH="C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/12.2 rel1/bin
 ifdef GCC_PATH
 CXX = $(GCC_PATH)/$(PREFIX)g++$(POSTFIX)
 CC = $(GCC_PATH)/$(PREFIX)gcc$(POSTFIX)
@@ -215,9 +216,9 @@ CXXFLAGS += -g -gdwarf -ggdb
 endif
 
 # Add additional flags
-CFLAGS += 
-ASFLAGS += 
-CXXFLAGS += 
+CFLAGS += -mno-unaligned-access 
+ASFLAGS += -mno-unaligned-access 
+CXXFLAGS += -mno-unaligned-access 
 
 # Generate dependency information
 CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"

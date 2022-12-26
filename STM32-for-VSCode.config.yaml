@@ -41,9 +41,9 @@ cxxDefinitionsFile:
 asDefinitionsFile:
 
 # Compiler flags
-cFlags: []
-cxxFlags: []
-assemblyFlags: []
+cFlags: [-mno-unaligned-access]
+cxxFlags: [-mno-unaligned-access]
+assemblyFlags: [-mno-unaligned-access]
 linkerFlags: 
   - -specs=nano.specs
 

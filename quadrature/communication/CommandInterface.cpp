@@ -3,11 +3,11 @@
 #include "components.hpp"
 
 bool armAxis(){
-    return axis_1->requestArm();
+    return axis_1.requestArm();
 }
 
 bool disarmAxis(){
-    axis_1->disarm();
+    axis_1.disarm();
     return true;
 }
 

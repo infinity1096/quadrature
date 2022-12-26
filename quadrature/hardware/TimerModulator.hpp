@@ -16,6 +16,7 @@ extern "C" {
 
 class TimerModulator : public Modulator {
     public:
+    TimerModulator() {}
     TimerModulator(TIM_HandleTypeDef* timer) : htimx(timer) {}
 
     void initialize() override ;
@@ -28,7 +29,7 @@ class TimerModulator : public Modulator {
     void modulate(float32_t Vab0[3], float32_t Vdc) override ;
 
     private:
-    TIM_HandleTypeDef* htimx;
+    TIM_HandleTypeDef* htimx = nullptr;
     float32_t Vab0Buffer[3];
     float32_t VabcBuffer[3];
     float32_t timingBuffer[3];

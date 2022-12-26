@@ -37,6 +37,7 @@ struct AxisConfig{
 
 class Axis{
     public:
+    Axis(){}
     Axis(AxisConfig axisConfig);
 
     // interface to axis from control logic

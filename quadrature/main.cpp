@@ -48,31 +48,31 @@ void StartDefaultTask(void *argument)
   /* USER CODE BEGIN StartDefaultTask */
     osDelay(100);
     
-    CalibrateCurrentSense phaseACalibrator(axis_1_ch_A, 100);
-    CalibrateCurrentSense phaseBCalibrator(axis_1_ch_B, 100);
-    CalibrateCurrentSense phaseCCalibrator(axis_1_ch_C, 100);
+    CalibrateCurrentSense phaseACalibrator(&axis_1_ch_A, 100);
+    CalibrateCurrentSense phaseBCalibrator(&axis_1_ch_B, 100);
+    CalibrateCurrentSense phaseCCalibrator(&axis_1_ch_C, 100);
 
-    CalibrateAxis axis_calibrator(axis_1);
+    CalibrateAxis axis_calibrator(&axis_1);
     
     while (!phaseACalibrator.isProcessEnded()){
-      axis_1_ch_A->updateCurrent();
+      axis_1_ch_A.updateCurrent();
       phaseACalibrator.step();
       osDelay(1);
     }
 
     while (!phaseBCalibrator.isProcessEnded()){
-      axis_1_ch_B->updateCurrent();
+      axis_1_ch_B.updateCurrent();
       phaseBCalibrator.step();
       osDelay(1);
     }
 
     while (!phaseCCalibrator.isProcessEnded()){
-      axis_1_ch_C->updateCurrent();
+      axis_1_ch_C.updateCurrent();
       phaseCCalibrator.step();
       osDelay(1);
     }
 
-    axis_1_modulator->hardwareEnable();
+    axis_1_modulator.hardwareEnable();
 
     /* encoder phase calibration not accurate at all
       while (!axis_calibrator.isProcessEnded()){
@@ -83,13 +83,13 @@ void StartDefaultTask(void *argument)
 
     osDelay(100);
 
-    axis_1->requestArm();
+    axis_1.requestArm();
     axis_1_control_logic.control_mode = ControlMode::CURRENT;
     axis_1_control_logic.Iq_target = 0.5;
   /* Infinite loop */
   for(;;)
   {
-    packet.pvcc_voltage = pvcc_sense->sensed_voltage;
+    packet.pvcc_voltage = pvcc_sense.sensed_voltage;
     //reporter.record(packet);
     osDelay(1);
   }
@@ -172,13 +172,13 @@ uint32_t idx = 0;
 // implements callback function after DMA transfer
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc){
   if (hadc == &hadc1){
-    axis_1_ch_A->updateCurrent();
-    axis_1_ch_B->updateCurrent();
-    axis_1_ch_C->updateCurrent();
+    axis_1_ch_A.updateCurrent();
+    axis_1_ch_B.updateCurrent();
+    axis_1_ch_C.updateCurrent();
     
     axis_1_control_logic.sensedCurrentUpdate();
   }else if (hadc == &hadc2){
-    pvcc_sense->updateVoltage();
+    pvcc_sense.updateVoltage();
   }
 }
 
@@ -188,11 +188,11 @@ extern "C" void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi){
 
 extern "C" void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi){
   if (hspi == &hspi3){
-    axis_1_encoder->encoderReadCompleteCallback();
+    axis_1_encoder.encoderReadCompleteCallback();
     axis_1_control_logic.sensedEncoderUpdate();
   }
 }
 
 extern "C" void EncoderTimer(){
-  axis_1_encoder->requestRead();
+  axis_1_encoder.requestRead();
 }

@@ -14,8 +14,9 @@ extern "C" {
 }
 #endif
 
-class AS5048 : public Encoder{
+class __attribute__((aligned(4))) AS5048 : public Encoder{
     public:
+    AS5048(){}
     AS5048(SPI_HandleTypeDef* spix, GPIO_TypeDef* aGPIOx, uint16_t aGPIOPin) : hspix(spix), cs_GPIOx(aGPIOx), cs_GPIO_Pin(aGPIOPin) {}
     bool initialize() override;
 
@@ -29,8 +30,8 @@ class AS5048 : public Encoder{
     uint16_t spi_buffer = 0;
     uint16_t raw_receive = 0;
 
-    SPI_HandleTypeDef* hspix;
-    GPIO_TypeDef* cs_GPIOx; 
+    SPI_HandleTypeDef* hspix = nullptr;
+    GPIO_TypeDef* cs_GPIOx = nullptr; 
     uint16_t cs_GPIO_Pin;
 };
 

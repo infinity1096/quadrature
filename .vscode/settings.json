@@ -1,8 +1,8 @@
 {
     "stm32-for-vscode.openOCDPath": "C:/Program Files (x86)/OpenOCD/bin/openocd.exe",
-    "stm32-for-vscode.armToolchainPath": "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10 2021.10/bin",
+    "stm32-for-vscode.armToolchainPath": "C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/12.2 rel1/bin",
     "stm32-for-vscode.makePath": "C:/Program Files (x86)/GnuWin32/bin/make.exe",
-    "cortex-debug.armToolchainPath": "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10 2021.10/bin",
+    "cortex-debug.armToolchainPath": "C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/12.2 rel1/bin",
     "cortex-debug.openocdPath": "C:/Program Files (x86)/OpenOCD/bin/openocd.exe",
     "files.associations": {
         "arm_math.h": "c",
@@ -54,5 +54,6 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "simulinkpidadjust.hpp": "c"
-    }
+    },
+    "cortex-debug.registerUseNaturalFormat": false
 }
