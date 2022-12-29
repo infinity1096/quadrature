@@ -17,6 +17,7 @@
 #include "CalibrateCurrentSense.hpp"
 #include "CalibrateAxis.hpp"
 #include "communication/CommandProcess.hpp"
+#include "communication/Telemetry.hpp"
 
 extern "C" void SystemClock_Config(void);
 
@@ -29,12 +30,6 @@ extern "C" {
 
 }
 
-struct TelemetryPacket{
-  float32_t pvcc_voltage;
-};
-
-SimulinkReport<TelemetryPacket,100> reporter;
-TelemetryPacket packet;
 
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
@@ -88,8 +83,7 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    packet.pvcc_voltage = pvcc_sense->sensed_voltage;
-    //reporter.record(packet);
+    
     osDelay(1);
   }
   /* USER CODE END StartDefaultTask */
@@ -105,7 +99,7 @@ const osThreadAttr_t telemetryTask_attributes = {
 
 void TelemetryTask(void* argument){
   while (true){
-    reporter.checkTransmit();
+    checkTelemetryTransmit();
     parseCommand();
     osDelay(1);
   }
@@ -176,6 +170,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc){
     axis_1_ch_C->updateCurrent();
     
     axis_1_control_logic.sensedCurrentUpdate();
+    recordCurrentPacket();
   }else if (hadc == &hadc2){
     pvcc_sense->updateVoltage();
   }
@@ -194,4 +189,6 @@ extern "C" void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi){
 
 extern "C" void EncoderTimer(){
   axis_1_encoder->requestRead();
+  recordVelocityPacket();
+  recordPositionPacket();
 }

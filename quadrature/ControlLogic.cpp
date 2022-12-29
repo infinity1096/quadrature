@@ -59,6 +59,10 @@ void ControlLogic::sensedCurrentUpdate(){
     Id_controller.antiSaturation(Vdq0_output[0], CURRENT_LOOP_DT);
     Iq_controller.antiSaturation(Vdq0_output[1], CURRENT_LOOP_DT);
 
+    // record output voltage
+    Vd_output = Vdq0_output[0];
+    Vq_output = Vdq0_output[1];
+
     // apply modulation
     inversePark(Vdq0_output, electrical_angle, Vab0);
     axis->applyModulation(Vab0);
