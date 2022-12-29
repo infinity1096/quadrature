@@ -17,9 +17,9 @@ extern "C" {
 template<typename T, size_t buf_length>
 class SimulinkReport {
     public:
-    SimulinkReport() : receive_buffer(1.5 * buf_length) {
-        memcpy(transmitBuffer, "SSSS", 4);
-        memcpy(transmitBuffer +  sizeof(float) + buf_length * sizeof(T), "EEEE", 4);
+    SimulinkReport(const char header[4], const char ending[4]) : receive_buffer(1.5 * buf_length) {
+        memcpy(transmitBuffer, header, 4);
+        memcpy(transmitBuffer +  sizeof(float) + buf_length * sizeof(T), ending, 4);
     }
 
     void record(const T& data){

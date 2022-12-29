@@ -23,34 +23,31 @@ extern "C" {
 #define CURRENT_PACKET_PERIOD 24000
 #define VELOCITY_PACKET_PERIOD 10000
 #define POSITION_PACKET_PERIOD 10000
-#define PACKET_PERIOD 100
+
+#define CURRENT_PACKET_LEN 100
+#define VELOCITY_PACKET_LEN 20
+#define POSITION_PACKET_LEN 20
 
 struct CurrentPacket {
-    uint32_t header;
     float32_t Id;
     float32_t Iq;
     float32_t Vd;
     float32_t Vq;
     float32_t Iq_target;
-    uint32_t ending;
 };
 
 struct VelocityPacket {
-    uint32_t header;
     float32_t vel_mech;
     float32_t vel_dot;
     float32_t Iq_target;
     float32_t vel_target;
-    uint32_t ending;
 };
 
 struct PositionPacket {
-    uint32_t header;
     float32_t pos_mech;
     float32_t pos_dot;
     float32_t vel_target;
     float32_t pos_target;
-    uint32_t ending;
 };
 
 void recordCurrentPacket();

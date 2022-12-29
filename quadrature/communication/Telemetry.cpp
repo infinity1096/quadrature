@@ -18,9 +18,9 @@ int16_t current_divisor = 1;
 int16_t velocity_divisor = 1;
 int16_t position_divisor = 1;
 
-SimulinkReport<CurrentPacket, PACKET_PERIOD> current_reporter;
-SimulinkReport<VelocityPacket, PACKET_PERIOD> velocity_reporter;
-SimulinkReport<PositionPacket, PACKET_PERIOD> position_reporter;
+SimulinkReport<CurrentPacket, CURRENT_PACKET_LEN> current_reporter(CURRENT_PACKET_HEADER, CURRENT_PACKET_ENDING);
+SimulinkReport<VelocityPacket, VELOCITY_PACKET_LEN> velocity_reporter(VELOCITY_PACKET_HEADER, VELOCITY_PACKET_ENDING);
+SimulinkReport<PositionPacket, POSITION_PACKET_LEN> position_reporter(POSITION_PACKET_HEADER, POSITION_PACKET_ENDING);
 
 void recordCurrentPacket(){
     
@@ -30,9 +30,6 @@ void recordCurrentPacket(){
         currentPacket.Vd = axis_1_control_logic.Vd_output;
         currentPacket.Vq = axis_1_control_logic.Vq_output;
         currentPacket.Iq_target = axis_1_control_logic.Iq_target;
-        
-        memcpy(&currentPacket.header, CURRENT_PACKET_HEADER, 4);
-        memcpy(&currentPacket.ending, CURRENT_PACKET_ENDING, 4);
 
         current_reporter.record(currentPacket);
     }
@@ -52,9 +49,6 @@ void recordVelocityPacket(){
         velocityPacket.vel_target = axis_1_control_logic.velocity_target;
         velocityPacket.Iq_target = axis_1_control_logic.Iq_target;
         
-        memcpy(&velocityPacket.header, VELOCITY_PACKET_HEADER, 4);
-        memcpy(&velocityPacket.ending, VELOCITY_PACKET_ENDING, 4);
-
         velocity_reporter.record(velocityPacket);
     }
 
@@ -72,9 +66,6 @@ void recordPositionPacket(){
         positionPacket.pos_dot = axis_1_control_logic.position_controller.error_dot;
         positionPacket.pos_target = axis_1_control_logic.position_target;
         positionPacket.vel_target = axis_1_control_logic.velocity_target;
-        
-        memcpy(&positionPacket.header, POSITION_PACKET_HEADER, 4);
-        memcpy(&positionPacket.ending, POSITION_PACKET_ENDING, 4);
 
         position_reporter.record(positionPacket);
     }

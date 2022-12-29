@@ -42,8 +42,10 @@ float32_t StateEstimator::getVelocity(){
 }
 
 void StateEstimator::getDQCurrent(float32_t* Id,  float32_t* Iq){
+    __disable_irq();
     *Id = Idq0Estimate[0];
     *Iq = Idq0Estimate[1];
+    __enable_irq();
 }
 
 void StateEstimator::getUnFilteredDQCurrent(float32_t* Id,  float32_t* Iq){

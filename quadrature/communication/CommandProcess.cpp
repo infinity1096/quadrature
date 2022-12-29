@@ -16,55 +16,42 @@ void parseCommand(){
         return;
     }
 
-    switch (dataLength){
-        case sizeof(SetTargetCommand):
-            SetTargetCommand command1;
-            memcpy(&command1, commandBuffer, dataLength);
+    if (dataLength == sizeof(SetTargetCommand)){
+        SetTargetCommand command;
 
-            if (strncpy((char*)&command1.header, SET_TARGET_HEADER, 4) != 0){
-                break;
+        memcpy(&command, commandBuffer, dataLength);
+
+        if (strncmp((char*)&command.header, SET_TARGET_HEADER, 4) == 0){
+            if (strncmp((char*)&command.ending, SET_TARGET_ENDING, 4) == 0){
+                // parse success, execute command
+                executeSetTarget(command);
             }
+        }
+        
+    } else if (dataLength == sizeof(SetPIDCommand)){
+        SetPIDCommand command;
 
-            if (strncpy((char*)&command1.ending, SET_TARGET_ENDING, 4) != 0){
-                break;
+        memcpy(&command, commandBuffer, dataLength);
+
+        if (strncmp((char*)&command.header, SET_PID_HEADER, 4) == 0){
+            if (strncmp((char*)&command.ending, SET_PID_ENDING, 4) == 0){
+                // parse success, execute command
+                executeSetPID(command);
             }
+        }
 
-            // parse success, execute command
-            executeSetTarget(command1);
+    } else if (dataLength == sizeof(SetTelemetryCommand)){
+        SetTelemetryCommand command;
 
-            break;
-        case sizeof(SetPIDCommand):
-            SetPIDCommand command2;
-            memcpy(&command2, commandBuffer, dataLength);
+        memcpy(&command, commandBuffer, dataLength);
 
-            if (strncpy((char*)&command2.header, SET_PID_HEADER, 4) != 0){
-                break;
+        if (strncmp((char*)&command.header, SET_TELEMETRY_HEADER, 4) == 0){
+            if (strncmp((char*)&command.ending, SET_TELEMETRY_ENDING, 4) == 0){
+                // parse success, execute command
+                setTelemetryDivisor(command.current_info_on, command.velocity_info_on, command.position_info_on, command.rate_divisor);
             }
+        }
 
-            if (strncpy((char*)&command2.ending, SET_PID_ENDING, 4) != 0){
-                break;
-            }
-
-            // parse success, execute command
-            executeSetPID(command2);
-
-            break;
-        case sizeof(SetTelemetryCommand):
-            SetTelemetryCommand command3;
-            memcpy(&command3, commandBuffer, dataLength);
-
-            if (strncpy((char*)&command3.header, SET_TELEMETRY_HEADER, 4) != 0){
-                break;
-            }
-
-            if (strncpy((char*)&command3.ending, SET_TELEMETRY_HEADER, 4) != 0){
-                break;
-            }
-
-            // parse success, execute command
-            executeSetTelemetry(command3);
-
-            break;
     }
 
     command_updated = false;
@@ -139,10 +126,6 @@ void executeSetPID(const SetPIDCommand& command){
 
     }
 
-}
-
-void executeSetTelemetry(const SetTelemetryCommand& command){
-    setTelemetryDivisor(command.current_info_on, command.velocity_info_on, command.position_info_on, command.rate_divisor);
 }
 
 extern "C" void processUSBReceive(char* buf, unsigned long* len){

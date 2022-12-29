@@ -33,7 +33,7 @@ class StateEstimator{
     bool derivative_initialized = false;
 
     private:
-    float32_t N = 300.0;
+    float32_t N = 30.0;
     Axis* axis;
     float32_t Iab0_buffer[3];
 };
