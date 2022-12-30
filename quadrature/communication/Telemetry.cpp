@@ -26,10 +26,10 @@ void recordCurrentPacket(){
     
     if (current_telemetry_enabled && current_loop_index % current_divisor == 0){
         // record current packet
-        axis_1_control_logic.state_estimator.getDQCurrent(&currentPacket.Id, &currentPacket.Iq);
-        currentPacket.Vd = axis_1_control_logic.Vd_output;
-        currentPacket.Vq = axis_1_control_logic.Vq_output;
-        currentPacket.Iq_target = axis_1_control_logic.Iq_target;
+        axis_1_control_logic.state_estimator.getABCurrent(&currentPacket.Ialpha, &currentPacket.Ibeta);
+        currentPacket.Valpha = axis_1_control_logic.Valpha_output;
+        currentPacket.Vbeta = axis_1_control_logic.Vbeta_output;
+        currentPacket.theta_e = axis_1_control_logic.state_estimator.getElectricalAngle();
 
         current_reporter.record(currentPacket);
     }

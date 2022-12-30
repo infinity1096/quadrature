@@ -18,6 +18,7 @@ class StateEstimator{
     float32_t getAngle();
     float32_t getVelocity();
     void getDQCurrent(float32_t* Id,  float32_t* Iq);
+    void getABCurrent(float32_t* Ialpha,  float32_t* Ibeta);
     void getUnFilteredDQCurrent(float32_t* Id,  float32_t* Iq);
     
     void setAxis(Axis* anAxis);
@@ -25,6 +26,7 @@ class StateEstimator{
     protected:
     float32_t Idq0Estimate[3] = {0.0, 0.0, 0.0};
     float32_t Idq0UnFiltered[3] = {0.0, 0.0, 0.0};
+    
     float32_t electrical_angle_estimate = 0.0;
     float32_t mechanical_angle_estimate = 0.0;
     float32_t mechanical_velocity_estimate = 0.0;

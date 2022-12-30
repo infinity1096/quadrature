@@ -48,6 +48,11 @@ void StateEstimator::getDQCurrent(float32_t* Id,  float32_t* Iq){
     __enable_irq();
 }
 
+void StateEstimator::getABCurrent(float32_t* Ialpha,  float32_t* Ibeta){
+    *Ialpha = Iab0_buffer[0];
+    *Ibeta = Iab0_buffer[1];
+}
+
 void StateEstimator::getUnFilteredDQCurrent(float32_t* Id,  float32_t* Iq){
     *Id = Idq0UnFiltered[0];
     *Iq = Idq0UnFiltered[1];

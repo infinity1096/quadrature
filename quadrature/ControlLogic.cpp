@@ -65,6 +65,11 @@ void ControlLogic::sensedCurrentUpdate(){
 
     // apply modulation
     inversePark(Vdq0_output, electrical_angle, Vab0);
+    
+    // record output ab0 voltage
+    Valpha_output = Vab0[0];
+    Vbeta_output = Vab0[1];
+
     axis->applyModulation(Vab0);
 }
 

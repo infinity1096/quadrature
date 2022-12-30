@@ -29,11 +29,11 @@ extern "C" {
 #define POSITION_PACKET_LEN 20
 
 struct CurrentPacket {
-    float32_t Id;
-    float32_t Iq;
-    float32_t Vd;
-    float32_t Vq;
-    float32_t Iq_target;
+    float32_t Ialpha;
+    float32_t Ibeta;
+    float32_t Valpha;
+    float32_t Vbeta;
+    float32_t theta_e;
 };
 
 struct VelocityPacket {

@@ -34,6 +34,9 @@ class ControlLogic {
     float32_t velocity_target = 0;
     float32_t position_target = 0;
 
+    float32_t Valpha_output = 0;
+    float32_t Vbeta_output = 0;
+
     float32_t Vd_output = 0;
     float32_t Vq_output = 0;
 
