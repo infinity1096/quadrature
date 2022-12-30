@@ -42,16 +42,6 @@ void parseCommand(){
 
     } else if (dataLength == sizeof(SetTelemetryCommand)){
         SetTelemetryCommand command;
-
-        memcpy(&command, commandBuffer, dataLength);
-
-        if (strncmp((char*)&command.header, SET_TELEMETRY_HEADER, 4) == 0){
-            if (strncmp((char*)&command.ending, SET_TELEMETRY_ENDING, 4) == 0){
-                // parse success, execute command
-                setTelemetryDivisor(command.current_info_on, command.velocity_info_on, command.position_info_on, command.rate_divisor);
-            }
-        }
-
     }
 
     command_updated = false;

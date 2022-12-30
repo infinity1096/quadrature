@@ -169,8 +169,8 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc){
     axis_1_ch_B->updateCurrent();
     axis_1_ch_C->updateCurrent();
     
-    axis_1_control_logic.sensedCurrentUpdate();
-    recordCurrentPacket();
+    axis_1_control_logic.sensedCurrentUpdate(); // record Valpha, Vbeta, theta_e
+    
   }else if (hadc == &hadc2){
     pvcc_sense->updateVoltage();
   }
@@ -189,6 +189,4 @@ extern "C" void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi){
 
 extern "C" void EncoderTimer(){
   axis_1_encoder->requestRead();
-  recordVelocityPacket();
-  recordPositionPacket();
 }

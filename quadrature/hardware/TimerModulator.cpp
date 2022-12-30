@@ -48,12 +48,14 @@ void TimerModulator::modulate(float32_t Va, float32_t Vb, float32_t Vc, float32_
 void TimerModulator::modulate(float32_t Vab0[3], float32_t Vdc) {
     memcpy(Vab0Buffer, Vab0, 3 * sizeof(float32_t));
 
+    #if 0
     float32_t voltageNorm = sqrt(Vab0Buffer[0] * Vab0Buffer[0] + Vab0Buffer[1] * Vab0Buffer[1]);
     
     if (voltageNorm > (2.0/3.0 * Vdc)){
         Vab0Buffer[0] = Vab0Buffer[0] / voltageNorm * (2.0/3.0 * Vdc);
         Vab0Buffer[1] = Vab0Buffer[1] / voltageNorm * (2.0/3.0 * Vdc);
     }
+    #endif
 
     SVPWM(Vab0Buffer, Vdc, timingBuffer);
 

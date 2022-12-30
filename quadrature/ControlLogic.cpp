@@ -1,6 +1,7 @@
 #include "ControlLogic.hpp"
 
 #include "FOC_math.hpp"
+#include "Telemetry.hpp"
 
 #define CURRENT_LOOP_DT 1.0f/24000.0f
 #define POSITION_LOOP_DT 1.0f/10000.0f
@@ -13,6 +14,8 @@ void ControlLogic::sensedCurrentUpdate(){
 
     // update state estimator
     state_estimator.updateSensedCurrent(sensed_current);
+    state_estimator.getABCurrent(&currentPacket.Ialpha, &currentPacket.Ibeta);
+    current_reporter.record(currentPacket);
 
     // check is axis armed
     if (!axis->isArmed()){
@@ -41,6 +44,7 @@ void ControlLogic::sensedCurrentUpdate(){
     // read sensed electrical angle and Id, Iq from state estimator
     float32_t Id, Iq, electrical_angle;
     state_estimator.getDQCurrent(&Id, &Iq);
+    
     electrical_angle = state_estimator.getElectricalAngle();
 
     // compute unclipped PID output from current control loop
@@ -65,6 +69,11 @@ void ControlLogic::sensedCurrentUpdate(){
 
     // apply modulation
     inversePark(Vdq0_output, electrical_angle, Vab0);
+
+    // recording
+    currentPacket.Valpha = Vab0[0];
+    currentPacket.Vbeta = Vab0[1];
+    currentPacket.theta_e = electrical_angle;
     
     // record output ab0 voltage
     Valpha_output = Vab0[0];
